@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building ODBC support</Header>
+
+<Section-2><Header>Windows platform</Header>
+
+<p>ODBC support is a standard part of the Windows platform. No changes are necessary.</p>
+</Section-2>
+
+<Section-2><Header>Unix platforms</Header>
+
+<p>There are several implementations of ODBC for Unix, but only <ident>unixODBC</ident> has been tested with the project.</p> 
+
+<p>ODBC support is included in many distributions. It is possible to:
+<ul>
+<li>Use ODBC libraries and header files from the distribution; or</li>
+<li>Download, build and install the <ident>unixODBC</ident> project; or</li>
+<li>Download the <ident>unixODBC</ident> project in order to get the header files, but use the ODBC libraries from the distribution.</li>
+</ul></p>
+
+<p>Building the client library requires the standard ODBC headers: <file>sql.h</file>, <file>sqlext.h</file> and <file>sqltypes.h</file>. Building the ODBC driver requires the additional header file <file>sqlucode.h</file>. Building the ODBC driver and the setup library needs <ident>libodbcinst.so</ident>. The <strong>ODBC Driver Manager</strong> <file>libodbc.so</file> is used by the client library at runtime only.</p>
+
+<p>The project contains a driver setup library that is designed specifically for <ident>unixODBC</ident>. It is a plug-in for <strong>ODBCConfig</strong>, the GUI utility for Driver and Data Source configuration. Building this library needs <file>odbcinst.h</file> and <file>odbcinstext.h</file> headers. 
+</p>
+
+<p>To obtain the ODBC header files:</p>
+<ol>
+<li>Download <ident>unixODBC</ident> from <a href="http://www.unixodbc.org"><ident>http://www.unixodbc.org</ident></a></li>
+<li>
+<p>Unpack it to a directory located next to <file>$(SQL_ROOT)</file> and rename the directory to <file>unixODBC</file>.</p>
+
+<p>If the <ident>unixODBC</ident> root directory is located and/or named differently, the configuration must be changed. Specify the path to the <file>unixODBC</file> directory relative to <file>$(SQL_ROOT)</file> among the parameters of the project (see <a href="BUILD_CONFIGURE.xml">Building the project on Unix</a>).</p>
+</li>
+</ol>
+
+<p>If ODBC libraries are not available from another source:</p>
+<ol start="3">
+<li>Build the <ident>unixODBC</ident> project according to the description. It is important to specify <ident>--sysconfdir=/etc</ident> among configure parameters, otherwise the ODBC libraries will look for ini files in a non-standard locations.</li>
+<li>do
+<code>make install</code>
+in the build directory in order to put the libraries into the proper location.</li>
+</ol>
+
+<p>Avoid combining ODBC libraries from the distribution and from your own build. Differences in configure parameters may cause a malfunction.</p>
+
+</Section-2>
+
+</Section-1>

@@ -1,0 +1,63 @@
+#Makes:   lib${PREF}odbc${EXT}S.so
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=odbccfg
+VPATH=$(top_dir)/src/$(ownsubdir)
+libname=lib@PREF@odbc@EXT@S
+fulllibname=$(libname).so.$(MAJOR).$(MINOR)
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) -I $(top_dir)/include/krnl \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/src/common/unix -I $(top_dir)/src/common \
+ -I $(top_dir)/@UNIXODBCDIR@/include -I .. 
+DEFINES=-DODBCDRV
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES) 
+CXXFLAGS=@CXXFLAGS@ -fpic
+CFLAGS=@CFLAGS@ -fpic
+
+LDFLAGS=-Wl,-t -v @NODEFAULTLIBS@ -L $(top_dir)/@UNIXODBCDIR@/odbcinst/.libs 
+SOURCES=drvsetup.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+.SECONDARY: $(OBJECTS)
+
+#OBCBINSTLIB=-lodbcinst  -- replaced by relayed linking
+OBCBINSTLIB=`relaytool --relay odbcinst -lodbcinst`
+
+all: $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so
+     
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname): $(fulllibname)
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(fulllibname) $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR): $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(fulllibname) $(libname).so.$(MAJOR); 
+	
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(libname).so.$(MAJOR) $(libname).so; 
+
+$(fulllibname): $(OBJECTS)
+	g++ $(LDFLAGS) -Wl,--soname=$(libname).so.$(MAJOR) -shared -o $@ $^ $(OBCBINSTLIB) @BINSTDLIBS@
+
+#### Other targets #################################################################
+clean:
+	rm -rf *.o lib*
+install: all
+	install -d $(prefix)lib/@pkgsubdir@
+	cp $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so $(prefix)lib/@pkgsubdir@
+
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES:.cpp=.d)
+ 

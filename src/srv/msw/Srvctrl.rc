@@ -1,0 +1,305 @@
+#include "utx.h"
+#include "server.h"
+
+#if WBVERS<900
+#include "whelp.h"
+#else
+#define HE_SERVERDLG1     2147
+#define HE_SERVERDLG2     2148
+#define HE_SERVERDLG3     2149
+#define HE_SERVERDLG4     2150
+#define HE_SERVERDLG5     2151
+#define HE_SERVERDLG6     2152
+#define HE_SERVERDLG7     2153
+#define HE_SERVERDLG8     2154
+#define HE_SERVERDLG10    2156
+#define HE_SERVERDLG11    2157
+#define HE_SERVERDLG12    2158
+#define HE_SERVERDLG13    2159
+
+#define HE_VOLBADAT1       2320
+#define HE_VOLBADAT2       2321
+#endif
+
+#if WBVERS<=1000
+BITMAP_TRANSPORT BITMAP "ipdirect.bmp"
+BITMAP_REPLIN    BITMAP "replin.bmp"
+BITMAP_REPLOUT   BITMAP "replout.bmp"
+#endif
+
+#ifndef ENGLISH
+
+#define SRV1  "Verze serveru:"
+#define SRV2  "Síové protokoly:"
+#define SRV3  "Pøipojeno klientù:"
+#define SRV4  "Klientské licence:"
+#define SRV5  "Log událostí"
+#define SRV6  "&Monitorovat všechny chyby"
+#define SRV7  "Monitorovat replikace"
+#define SRV8  "Øídicí &konzole"
+#define SRV10 "Vym&azat"
+#define SRV12 "Ukonèit &server"
+
+#define SRV40CAPT "Zadejte heslo serveru:"
+#define SRV41     "&Zru\232it"
+
+#define SRV50 "Volba databáze"
+#define SRV51 "Vyberte databázi, nad níž bude server pracovat:"
+#define SRV52 "(databáze není uvedena na pøíkazové øádce)"
+#define SRV53 "&Poskytovat služby serveru v síti"
+
+#else
+
+#define SRV1  "Server version:"
+#define SRV2  "Network protocols:"
+#define SRV3  "Clients connected:"
+#define SRV4  "Client licenses:"
+#define SRV5  "Event log"
+#define SRV6  "&Log all client errors"
+#define SRV7  "Lo&g replication"
+#define SRV8  "Co&ntrol console"
+#define SRV10 "Cle&ar list"
+#define SRV12 "&Stop server"
+
+#define SRV40CAPT "Enter the server password:"
+#define SRV41     "&Cancel"
+
+#define SRV50 "Select the database"
+#define SRV51 "Select the database for the server:"
+#define SRV52 "(database not specified on the command line)"
+#define SRV53 "&Enable network operation of the server"
+
+#endif
+
+#if WBVERS>=1000
+DLG_SERVER_INFO DIALOGEX 85, 12, 221, 156
+STYLE WS_CHILD | WS_VISIBLE 
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV1, 32000, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 6, 60, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_VERSION, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 6, 56, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_TRANSPORT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 140, 2, 16, 16
+ CONTROL "", CD_SI_REPLIN, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 156, 2, 16, 16
+ CONTROL "", CD_SI_REPLOUT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 172, 2, 16, 16
+ CONTROL SRV2, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 18, 60, 8, 0, HE_SERVERDLG2
+ CONTROL "", CD_SI_PROT, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 18, 124, 8, 0, HE_SERVERDLG2
+ CONTROL SRV3, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 30, 60, 8, 0, HE_SERVERDLG3
+ CONTROL "", CD_SI_USERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 30, 44, 8, 0, HE_SERVERDLG3
+ CONTROL SRV4, 32003, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 42, 60, 8, 0, HE_SERVERDLG4
+ CONTROL "", CD_SI_MAXUSERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 42, 124, 8, 0, HE_SERVERDLG4
+ CONTROL SRV5, CD_SI_LOG, "listbox", LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 4, 56, 212, 86, 0, HE_SERVERDLG5
+ CONTROL SRV10, CD_SI_CLEAR, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 148, 68, 13, 0, HE_SERVERDLG13
+ CONTROL SRV12, CD_SI_DOWN, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 148, 148, 68, 13, 0, HE_SERVERDLG11
+}
+
+#elif WBVERS>=950
+DLG_SERVER_INFO DIALOGEX 85, 12, 221, 156
+STYLE WS_CHILD | WS_VISIBLE //DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+//CAPTION ""
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV1, 32000, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 6, 60, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_VERSION, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 6, 56, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_TRANSPORT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 140, 2, 16, 16
+ CONTROL "", CD_SI_REPLIN, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 156, 2, 16, 16
+ CONTROL "", CD_SI_REPLOUT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 172, 2, 16, 16
+ CONTROL SRV2, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 18, 60, 8, 0, HE_SERVERDLG2
+ CONTROL "", CD_SI_PROT, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 18, 124, 8, 0, HE_SERVERDLG2
+ CONTROL SRV3, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 30, 60, 8, 0, HE_SERVERDLG3
+ CONTROL "", CD_SI_USERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 30, 44, 8, 0, HE_SERVERDLG3
+ CONTROL SRV4, 32003, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 42, 60, 8, 0, HE_SERVERDLG4
+ CONTROL "", CD_SI_MAXUSERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 42, 124, 8, 0, HE_SERVERDLG4
+ CONTROL SRV5, CD_SI_LOG, "listbox", LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 4, 56, 212, 69, 0, HE_SERVERDLG5
+ CONTROL SRV6, CD_SI_ERRORS, "button", BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 129, 180, 9, 0, HE_SERVERDLG6
+ CONTROL SRV10, CD_SI_CLEAR, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 146, 68, 13, 0, HE_SERVERDLG13
+ CONTROL SRV12, CD_SI_DOWN, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 148, 146, 68, 13, 0, HE_SERVERDLG11
+}
+
+#elif WBVERS<900
+DLG_SERVER_INFO DIALOGEX 85, 12, 221, 176
+EXSTYLE /*WS_EX_DLGMODALFRAME |*/ WS_EX_CONTEXTHELP
+STYLE WS_CHILD | WS_VISIBLE //DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+//CAPTION ""
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV1, 32000, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 6, 60, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_VERSION, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 6, 56, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_TRANSPORT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 140, 2, 16, 16
+ CONTROL "", CD_SI_REPLIN, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 156, 2, 16, 16
+ CONTROL "", CD_SI_REPLOUT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 172, 2, 16, 16
+ CONTROL SRV2, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 18, 100, 8, 0, HE_SERVERDLG2
+ CONTROL "", CD_SI_PROT, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 18, 124, 8, 0, HE_SERVERDLG2
+ CONTROL SRV3, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 30, 60, 8, 0, HE_SERVERDLG3
+ CONTROL "", CD_SI_USERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 30, 44, 8, 0, HE_SERVERDLG3
+ CONTROL SRV4, 32003, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 42, 60, 8, 0, HE_SERVERDLG4
+ CONTROL "", CD_SI_MAXUSERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 42, 124, 8, 0, HE_SERVERDLG4
+ CONTROL SRV5, CD_SI_LOG, "listbox", LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 4, 56, 212, 69, 0, HE_SERVERDLG5
+ CONTROL SRV6, CD_SI_ERRORS, "button", BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 129, 180, 9, 0, HE_SERVERDLG6
+ CONTROL SRV7, CD_SI_REPLIMON, "button", BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 142, 160, 9, 0, HE_SERVERDLG12
+ PUSHBUTTON SRV8, CD_SI_CONSOLE, 4, 160, 68, 13, WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 0, HE_SERVERDLG7
+ CONTROL SRV10, CD_SI_CLEAR, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 76, 160, 68, 13, 0, HE_SERVERDLG13
+ CONTROL SRV12, CD_SI_DOWN, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 148, 160, 68, 13, 0, HE_SERVERDLG11
+}
+#else
+DLG_SERVER_INFO DIALOGEX 85, 12, 221, 156
+EXSTYLE /*WS_EX_DLGMODALFRAME |*/ WS_EX_CONTEXTHELP
+STYLE WS_CHILD | WS_VISIBLE //DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+//CAPTION ""
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV1, 32000, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 6, 60, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_VERSION, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 6, 56, 8, 0, HE_SERVERDLG1
+ CONTROL "", CD_SI_TRANSPORT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 140, 2, 16, 16
+ CONTROL "", CD_SI_REPLIN, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 156, 2, 16, 16
+ CONTROL "", CD_SI_REPLOUT, "static", SS_BITMAP | SS_CENTERIMAGE | WS_CHILD, 172, 2, 16, 16
+ CONTROL SRV2, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 18, 60, 8, 0, HE_SERVERDLG2
+ CONTROL "", CD_SI_PROT, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 18, 124, 8, 0, HE_SERVERDLG2
+ CONTROL SRV3, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 30, 60, 8, 0, HE_SERVERDLG3
+ CONTROL "", CD_SI_USERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 30, 44, 8, 0, HE_SERVERDLG3
+ CONTROL SRV4, 32003, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 12, 42, 60, 8, 0, HE_SERVERDLG4
+ CONTROL "", CD_SI_MAXUSERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 84, 42, 124, 8, 0, HE_SERVERDLG4
+ CONTROL SRV5, CD_SI_LOG, "listbox", LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 4, 56, 212, 69, 0, HE_SERVERDLG5
+ CONTROL SRV6, CD_SI_ERRORS, "button", BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 129, 180, 9, 0, HE_SERVERDLG6
+ CONTROL SRV10, CD_SI_CLEAR, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 146, 68, 13, 0, HE_SERVERDLG13
+ CONTROL SRV12, CD_SI_DOWN, "button", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 148, 146, 68, 13, 0, HE_SERVERDLG11
+}
+#endif
+
+DLG_KERNEL_PASSWORD DIALOG 97, 108, 162, 51
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_TOPMOST 
+CAPTION SRV40CAPT
+FONT 8, "MS Sans Serif"
+BEGIN
+        CONTROL "", CD_KERPASS_EDIT, "EDIT", ES_LEFT | ES_AUTOHSCROLL | ES_PASSWORD | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_GROUP | WS_TABSTOP, 8, 8, 148, 12
+        CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 17, 31, 48, 14
+        PUSHBUTTON SRV41, IDCANCEL, 97, 31, 48, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+END
+
+#if WBVERS>=1000
+
+DLG_SELECT_DATABASE DIALOGEX 80, 20, 223, 189
+EXSTYLE WS_EX_DLGMODALFRAME | WS_EX_CONTEXTHELP
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION SRV50
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV51, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 4, 176, 9, 0, HE_VOLBADAT1
+ CONTROL SRV52, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 13, 180, 9, 0, HE_VOLBADAT1
+ CONTROL "", CD_DATABASE_LIST, "listbox", LBS_STANDARD | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 26, 148, 157, 0, HE_VOLBADAT1
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 164, 26, 50, 14
+ CONTROL UTX_CANCEL, IDCANCEL, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 164, 47, 50, 14
+}
+#else
+
+DLG_SELECT_DATABASE DIALOGEX 80, 20, 223, 189
+EXSTYLE WS_EX_DLGMODALFRAME | WS_EX_CONTEXTHELP
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION SRV50
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRV51, 32001, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 4, 176, 9, 0, HE_VOLBADAT1
+ CONTROL SRV52, 32002, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 13, 180, 9, 0, HE_VOLBADAT1
+ CONTROL "", CD_DATABASE_LIST, "listbox", LBS_STANDARD | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 26, 148, 142, 0, HE_VOLBADAT1
+ CONTROL SRV53, CD_NETWORK_SERVER, "button", BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 4, 172, 144, 13, 0, HE_VOLBADAT2
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 164, 26, 50, 14
+ CONTROL UTX_CANCEL, IDCANCEL, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 164, 47, 50, 14
+}
+#endif
+// popup texts
+
+#ifdef ENGLISH
+
+STRINGTABLE
+BEGIN
+  POP_BASE+HE_SERVERDLG1  "Version number of the SQL server."
+  POP_BASE+HE_SERVERDLG11  "Stops the running SQL server. Warns and requires the confirmation if any clients are connected to the server."
+  POP_BASE+HE_SERVERDLG12  "If checked, the replication-related actions are logged in the basic log. The checkbox is active if replication is allowed."
+  POP_BASE+HE_SERVERDLG13  "This button clears the the window containing the recent contents of the basic log. Does not affect the operation of the SQL server."
+  POP_BASE+HE_SERVERDLG2  "The list of protocols supported by the server for the communication with clients. N/A says that only local client can access the server."
+  POP_BASE+HE_SERVERDLG3  "Number of connected clients. The first figure is the number of access licenses consumed by the clients, the second one if the number of all connections. After '+' is the number of WWW connections."
+  POP_BASE+HE_SERVERDLG4  "Total number of client access licenses." //  '+WWW access' says that the web asscess license is available. '+FullText' says that fulltext licence is available.
+  POP_BASE+HE_SERVERDLG5  "This list box contains the most recent records from the basic log generated by the SQL server. Its contents depends on logging settings. The log is simultaneously stored in a text file (see the Control Console).\nEach record contains its date and time, character indicating the record type and user name of the client (or thread name). Name 'Console' is used for records generated by the SQL server itself, 'Replicator' for replicating threads)."
+  POP_BASE+HE_SERVERDLG6  "If checked, all errors caused by the clients are logged to the basic log (including user name and time)."
+  POP_BASE+HE_SERVERDLG7  "This button opens the console for controlling and watching the server operation."
+
+  POP_BASE+HE_VOLBADAT1  "The 602SQL server has been started without the command line parameter indicating the database. You have to select the database for the server. The list contains all the local databases registered on the computer. Selecting a database from the list (e.g. Payroll) is equivalent to the command line paramater &'Payroll'."
+  POP_BASE+HE_VOLBADAT2  "This checkbox determines if the SQL server will offer its services in the network so that clients from other computers can connect to it. Checking it is equivalent to the command line parameter /N."
+END
+
+#else
+
+STRINGTABLE
+BEGIN
+  POP_BASE+HE_SERVERDLG1  "Èíslo verze serveru."
+  POP_BASE+HE_SERVERDLG11  "Tlaèítko se pokusí uzavøít bìžící databázový server. Jsou-li pøipojeni uživatelé, vydá varování a po potvrzení skonèí èinnost. "
+  POP_BASE+HE_SERVERDLG12  "Je-li zatržen tento ètverec, do logu se vypisují informace o probíhajících replikacích. Ètverec je aktivní, pokud je povolena replikace v replikaèních parametrech serveru."
+  POP_BASE+HE_SERVERDLG13  "Tlaèítkem vymažete obsah okna s logem. Na bìh serveru nemá žádný vliv. "
+  POP_BASE+HE_SERVERDLG2  "Seznam protokolù, kterými server komunikuje. Pøi lokálním provozu je zde uvedeno N/A - na server se není možno pøipojit vzdáleným klientem."
+  POP_BASE+HE_SERVERDLG3  "Poèet právì pøipojených klientù. První èíslice udává poèet spotøebovaných licencí pro pøístup, èíslo v závorce skuteèný poèet pøihlášených. Pøípadný znak + a èíslice udává aktuální poèet WWW pøístupù."
+  POP_BASE+HE_SERVERDLG4  "Informace o zakoupených klientských licencích. Èíslice udává poèet licencí pro pøístup." // , je-li zakoupena licence pro WWW pøístup, objeví se zde nápis +WWW pøístup, je-li zakoupena licence pro FullText, objeví se zde nápis +FullText
+  POP_BASE+HE_SERVERDLG5  "Výpis nejnovìjších záznamù ze základního logu serveru podle nastavení logování. Lze zde nechat vypisovat chybové a informaèní hlášky generované serverem. Základní log se souèasnì mùže ukládat do textového souboru (program Konfigurace, záložka Databáze a servery).\nZáznam obsahuje datum a èas výpisu, znaèku pro typ výpisu a jméno klienta, který výpis vyvolal (resp. jméno vlákna, které výpis vyvolalo, napø. Console, jedná-li se o výpis vyvolaný z okna serveru, Replicator, jde-li o monitor replikací apod.)."
+  POP_BASE+HE_SERVERDLG6  "Je-li zatržen tento ètverec, do logu se vypisují chyby hlášené serverem týkající se jednotlivých klientù (vèetnì jména uživatele a èasu chyby).  "
+  POP_BASE+HE_SERVERDLG7  "Tlaèítko otevøe konzoli pro øízení a sledování serveru."
+
+  POP_BASE+HE_VOLBADAT1  "Spustili jste 602SQL server (tedy program 602srv8.EXE) bez parametrù na pøíkazové øádce, které urèují, s kterými daty má program pracovat. Zøejmì program nespouštíte ikonou vzniklou pøi instalaci. Výbìr databáze se tedy musí provést dodateènì - seznam nabízí registrované lokální databáze na Vašem poèítaèi. Výbìr databáze ze seznamu (napø. Moje_databaze) odpovídá parametru pøíkazové øádky &'Moje_databaze'"
+  POP_BASE+HE_VOLBADAT2  "Máte možnost zvolit, má-li server své služby nabízet v síti, aby se k nìmu mohli pøipojovat klienti z jiných stanic. Zatržení ètverce odpovídá parametru pøíkazové øádky /N"
+END
+#endif
+
+#ifdef ENGLISH
+#define SRVSTOP0  "Stopping the SQL server"
+#define SRVSTOP1  "Clients are connected to the server. Do you prefer to:"
+#define SRVSTOP2  "Warn the interactive clients and wait 1 minute"
+#define SRVSTOP3  "Stop the server immediately"
+#else
+#define SRVSTOP0  "Ukonèování SQL serveru"
+#define SRVSTOP1  "Na tento server jsou pøipojení klienti. Pøejete si:"
+#define SRVSTOP2  "Varovat interaktivní klienty a minutu poèkat"
+#define SRVSTOP3  "Ukonèit server okamžitì"
+#endif
+
+DLG_STOP_USERS DIALOG 0, 0, 210, 66
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CONTEXTHELP | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION SRVSTOP0
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRVSTOP1, 32000, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 8, 4, 200, 13
+ CONTROL SRVSTOP2, CD_STOP_SERVER_WARN, "button", BS_AUTORADIOBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 8, 17, 192, 13
+ CONTROL SRVSTOP3, CD_STOP_SERVER_IMM, "button", BS_AUTORADIOBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 30, 192, 14
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 38, 47, 50, 14
+ CONTROL UTX_CANCEL, IDCANCEL, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 122, 47, 50, 14
+}
+
+#if WBVERS<900
+
+#ifdef ENGLISH
+#define SRVLIC0  "License number needed"
+#define SRVLIC1  "SQL server needs the operational license. Obtain it on http://eshop.software602.com using the following installation key:"
+#define SRVLIC2  "I want to obtain the license on the web"
+#define SRVLIC3  "I have obtained the license given below (SQ1...):"
+#else
+#define SRVLIC0  "Potøebuji provozní licenci"
+#define SRVLIC1  "SQL server nemá provozní licenci. Získáte ji po registraci na http://eshop.software602.cz s tímto instalaèním klíèem:"
+#define SRVLIC2  "Chci se pøipojit na web a získat licenci"
+#define SRVLIC3  "Již jsem získal licenci (SQ1...) a vyplnil jsem ji níže:"
+#endif
+
+DLG_REGISTER_SERVER DIALOG 100, 100, 229, 118
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CONTEXTHELP | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION SRVLIC0
+FONT 8, "MS Sans Serif"
+{
+ CONTROL SRVLIC1, -1, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 4, 224, 22
+ CONTROL "", CD_SERVER_IK, "edit", ES_LEFT | ES_AUTOHSCROLL | ES_READONLY | WS_CHILD | WS_VISIBLE | WS_BORDER, 20, 26, 152, 13
+ CONTROL SRVLIC2, CD_SERVER_GETLIC, "button", BS_AUTORADIOBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 8, 52, 188, 9
+ CONTROL SRVLIC3, CD_SERVER_SAVELIC, "button", BS_AUTORADIOBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 8, 65, 190, 9
+ CONTROL "", CD_SERVER_LCS, "edit", ES_UPPERCASE | ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_GROUP | WS_TABSTOP, 20, 78, 152, 12
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 8, 100, 50, 14
+ CONTROL UTX_CANCEL, IDCANCEL, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 89, 100, 50, 14
+ CONTROL UTX_HELP, IDHELP, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 169, 100, 50, 14
+}
+
+#endif
+
+

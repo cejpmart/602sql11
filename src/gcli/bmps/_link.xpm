@@ -1,0 +1,25 @@
+/* XPM */
+static char *_link_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 3 1",
+"X c Black",
+". c #C0C0C0",
+"  c None",
+/* pixels */
+"                ",
+"                ",
+"     .XXX       ",
+"    .X   X      ",
+"   .X    .X     ",
+"   .X    .X     ",
+"    .X  .X      ",
+"     .X.X       ",
+"      .X        ",
+"     .X.X  .X   ",
+"   .XX  .XX.X   ",
+"  .X      .XX   ",
+"  X     .XXXX   ",
+"                ",
+"                ",
+"                "
+};

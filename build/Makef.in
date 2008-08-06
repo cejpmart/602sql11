@@ -1,0 +1,173 @@
+# Makef.in - makefile for building the RPM. Not a part of the 602 Open Server project.
+
+# Directory for the tree create for the RPM:
+localroot=local-root
+# Prefix passed to the make install
+ulocalroot=$(localroot)/usr
+# External files used by the RPM
+#rpmdistr=/mnt/wbase/linux/rpm
+rpmdistr=/mnt/padak-wbase/linux/rpm
+# External files form the non-open build
+closeddir=/usr/local/src/602sql10r
+wclibdir=/usr/local/src/wc/linux/make
+
+pkgsubdir=@pkgsubdir@
+rpmloc=`rpm --eval '%{_rpmdir}'`/`rpm --eval '%{_target_cpu}'`
+
+# Archiv s binarkami
+disttar=@PREF@sql@EXT@-binary-@MAJOR_VERSION@-@MINOR_VERSION@.tar.gz
+
+# RPM: hledej archiv v tomto adresari, dosad verzi a release
+RPMFLAGS=--eval "%define _sourcedir `pwd`" \
+	 --eval "%define _prefix /usr" \
+	 --eval "%define pkgversion @MAJOR_VERSION@" \
+	 --eval "%define pkgrelease @MINOR_VERSION@"
+
+all: rpm
+
+# Do this only once per WX version
+#ORIGIN: use "-Wl,-rpath,'\$\$ORIGIN/...'" when calling helpview make from the command line
+helpview:
+	rm -f   @WXROOT@/@CONFNAME@/samples/html/helpview/helpview
+	make -C @WXROOT@/@CONFNAME@/samples/html/helpview LIBS="-v -Wl,-t -nodefaultlibs" EXTRALIBS="-L/usr/X11R6/lib -Wl,-Bdynamic,-lpthread -Wl,-Bstatic,-lz,-lstdc++ -Wl,-Bdynamic,-ldl,-lc,-lm -Wl,-Bstatic,-lgcc,-lgcc_eh -Wl,-Bdynamic" SAMPLES_RPATH_FLAG="-Wl,-rpath,'\$$\$$ORIGIN/../lib/602sql11'"
+	cp      @WXROOT@/@CONFNAME@/samples/html/helpview/helpview $(rpmdistr)/usr/bin/helpview@EXT@
+
+instdirs:
+	# making and copying makd binaries into the (existing) local root directory. No stripping, no copying other files
+	$(MAKE)        prefix=`pwd`/$(ulocalroot)/ instdirs
+	$(MAKE) -C xml prefix=`pwd`/$(ulocalroot)/ install
+
+# Prepares distribution tree in $localroot, $ulocalroot
+dist: 
+	rm -rf $(localroot)
+	install -d $(ulocalroot)
+	$(MAKE)        prefix=`pwd`/$(ulocalroot)/ install
+	$(MAKE) -C xml prefix=`pwd`/$(ulocalroot)/ install
+
+	# Logos library (build in version 10)
+	cp $(closeddir)/logos/liblemmat.so $(ulocalroot)/lib/$(pkgsubdir)
+
+	if test "@CONFNAME@" = "release"; then \
+	find $(localroot) -type f|\
+		xargs file|\
+		grep "not stripped"|\
+		sed "s/:.*//" |\
+		xargs strip -s; \
+	fi
+
+	# etc files (init.d files depend on version):
+	install -d $(localroot)/etc/init.d
+	cp -p $(rpmdistr)/etc/init.d/$(pkgsubdir) $(localroot)/etc/init.d
+	chmod 755 $(localroot)/etc/init.d/$(pkgsubdir)
+	cp -p $(rpmdistr)/etc/init.d/s$(pkgsubdir) $(localroot)/etc/init.d
+	chmod 755 $(localroot)/etc/init.d/s$(pkgsubdir)
+
+	# licence libs libwc.so (locally build), xerces (no more libodbcinst):
+	cp $(wclibdir)/libwc.so $(ulocalroot)/lib/$(pkgsubdir)
+	cp -dp $(rpmdistr)/usr/lib/v11/* $(ulocalroot)/lib/$(pkgsubdir)
+	cd $(ulocalroot)/lib/$(pkgsubdir); ln -sf libxerces-c.so.25.0 libxerces-c.so.25
+	chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/*
+
+	# help viewer (build by the helpview target):
+	#cp $(rpmdistr)/usr/bin/helpview@EXT@ $(ulocalroot)/bin
+	cp @WXROOT@/@CONFNAME@/samples/html/helpview/helpview $(ulocalroot)/bin/helpview@EXT@
+	chmod 755 $(ulocalroot)/bin/helpview@EXT@
+
+	#### Files from $(rpmdistr)
+	# (lemmatization) data files, icon files, uninstall icon script:
+	install -d $(ulocalroot)/share/$(pkgsubdir)
+	cp $(rpmdistr)/usr/share/$(pkgsubdir)/* $(ulocalroot)/share/$(pkgsubdir)
+	chmod 644 $(ulocalroot)/share/$(pkgsubdir)/*
+	chmod 755 $(ulocalroot)/share/$(pkgsubdir)/do_remove_launchers
+	# icon toolkit (desktop menu transformation for Gnome):
+	install -d $(localroot)/tmp
+	cp $(rpmdistr)/tmp/@EXT@/do_add_launchers $(localroot)/tmp/do_add_launchers@EXT@
+	chmod 755 $(localroot)/tmp/do_add_launchers@EXT@
+	cp $(rpmdistr)/tmp/create-602sql@EXT@-gnome2-menu-entry.xsl $(localroot)/tmp
+	chmod 644 $(localroot)/tmp/create-602sql@EXT@-gnome2-menu-entry.xsl
+	# shortcut files:
+	install -d $(ulocalroot)/share/applications
+	cp $(rpmdistr)/usr/share/applications/602gcli@EXT@.desktop $(ulocalroot)/share/applications
+	cp $(rpmdistr)/usr/share/applications/602mng@EXT@.desktop $(ulocalroot)/share/applications
+	chmod 644 $(ulocalroot)/share/applications/*
+
+	# fulltext convertors (all from $(rpmdistr)):
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/antiword
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/antiword/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/antiword
+	chmod 644 $(ulocalroot)/lib/$(pkgsubdir)/ftx/antiword/*
+	chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/ftx/antiword/antiword
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc
+	cp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/catdoc/catdoc  $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc
+	cp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/catdoc/catppt  $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc
+	cp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/catdoc/xls2csv $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc
+	chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/*
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/share/catdoc
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/catdoc/share/catdoc/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/share/catdoc
+	chmod 644 $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/share/catdoc/*
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/man/man1
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/catdoc/man/man1/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/man/man1
+	chmod 644 $(ulocalroot)/lib/$(pkgsubdir)/ftx/catdoc/man/man1/*
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/rtf2html
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/rtf2html/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/rtf2html
+	chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/ftx/rtf2html/rtf2html
+	#install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/ooo11cvt
+	#cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/ooo11cvt/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/ooo11cvt
+	#chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/ftx/ooo11cvt/ooo11cvt
+	#chmod 644 $(ulocalroot)/lib/$(pkgsubdir)/ftx/ooo11cvt/ooo11cvt.rdb
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/xpdf/pdf* $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf
+	chmod 755 $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf/pdf*
+	install -d $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf/etc
+	cp -dp $(rpmdistr)/usr/lib/$(pkgsubdir)/ftx/xpdf/etc/* $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf/etc
+	chmod 644 $(ulocalroot)/lib/$(pkgsubdir)/ftx/xpdf/etc/*
+
+# nefunguje  --target=i586 / neprovedou se --eval)
+# vyrobi 2 RPM - pro office a server: upravi local-root, zabali jej do $(disttar), vola rpmbuild
+# rozdily: Jiny soubor /etc/602sql.pattern, server nema FIL.
+# Server rpm se prejmenuje, obe rpm prijdou do current dir.
+rpm: dist
+	#prepare files for the OFFICE RPM:
+	# office database file: will be removed in the "server" RPM
+	install -d $(localroot)/var/lib/$(pkgsubdir)/602Office_db
+	chmod 1777 $(localroot)/var/lib/$(pkgsubdir)/602Office_db
+	cp $(rpmdistr)/var/lib/$(pkgsubdir)/602Office_db/wb8.fil.pattern $(localroot)/var/lib/$(pkgsubdir)/602Office_db
+	chmod 666 $(localroot)/var/lib/$(pkgsubdir)/602Office_db/wb8.fil.pattern
+	#write etc/602sql file:
+	cp -p $(rpmdistr)/etc/602sql_office@EXT@.pat  $(localroot)/etc/602sql.pattern@EXT@
+	chmod 666 $(localroot)/etc/602sql.pattern@EXT@
+	rm -f $(disttar)
+	cd $(localroot); tar czvf ../$(disttar) *
+	-rm $(rpmloc)/*
+	rpmbuild -bb ../602sql@EXT@.spec $(RPMFLAGS)
+	cp $(rpmloc)/*.rpm  .
+	#prepare files for the SERVER RPM:
+	#replace etc/602sql file:
+	cp -p $(rpmdistr)/etc/602sql_server@EXT@.pat  $(localroot)/etc/602sql.pattern@EXT@
+	chmod 666 $(localroot)/etc/602sql.pattern@EXT@
+	#remove FIL:
+	rm $(localroot)/var/lib/$(pkgsubdir)/602Office_db/wb8.fil.pattern
+	rm -f $(disttar)
+	cd $(localroot); tar czvf ../$(disttar) *
+	-rm $(rpmloc)/*
+	rpmbuild -bb ../602sql@EXT@.spec $(RPMFLAGS)
+	cp $(rpmloc)/602sql@EXT@-1-0.i586.rpm 602sql@EXT@-server-1-0.i586.rpm
+
+distrib:
+	scp -i /root/.ssh/id_dsa *.rpm devlinux@winbase.software602.cz:/home/samba/wbase/wb11/installers
+	scp -i /root/.ssh/id_dsa *.gz  devlinux@winbase.software602.cz:/home/samba/wbase/wb11/installers
+	#cp *.rpm /mnt/wb602_m/wb11/installers
+	#cp *.gz  /mnt/wb602_m/wb11/installers
+
+cpgz:
+	scp -i /root/.ssh/id_dsa *.gz  devlinux@winbase.software602.cz:/home/samba/wbase
+
+####### Making configure and this Makefile ###############################
+$../configure: ../@CONFIGURE_NAME@.ac
+	cd .. && autoconf -o @CONFIGURE_NAME@ @CONFIGURE_NAME@.ac && cp -p @CONFIGURE_NAME@ configure
+
+Makef: ../Makef.in ../conf.h.in config.status
+	./config.status
+
+config.status: ../@CONFIGURE_NAME@.ac
+	cd .. && autoconf -o @CONFIGURE_NAME@ @CONFIGURE_NAME@.ac && cp -p @CONFIGURE_NAME@ configure
+	rpmsdir=$(rpmsdir) ./config.status --recheck

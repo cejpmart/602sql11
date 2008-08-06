@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Installing the Relaytool</Header>
+
+<p><ident>Relaytool</ident> is a program to provide a more convenient interface to <ident>dlopen/dlsym</ident> on Unix platforms. It replaces a hard link (-lwhatever) of symbols by a lazy-link at runtime. The web page of the project is <a href="http://autopackage.org/aptools.html">h<ident>ttp://autopackage.org/aptools.html</ident></a>.</p>
+
+<p><ident>Relaytool</ident> makes the project less dependent on dynamic libraries installed on the target system. For example: when the target system does not have the ODBC library, the ODBC functionality of the product is disabled but you can use all other features. You will not get the message:
+<ident>Error while loading shared libraries: XXX: Cannot open shared object file: No such file or directory</ident></p>
+
+<Section-2><Header>Obtaining the Relaytool</Header>
+<ol>
+<li>Download <ident>apbuild</ident> from <a href="http://autopackage.org/download-tools.html"><ident>http://autopackage.org/download-tools.html</ident></a>. </li>
+<li>Unpack it.</li>
+<li>Do
+<code>make install</code>
+</li>
+</ol>
+
+<p><ident>Relaytool</ident> does not need to be built, it is a script.</p>
+</Section-2>
+</Section-1>

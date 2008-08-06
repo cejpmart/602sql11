@@ -1,0 +1,3 @@
+// krnl.rc - resources for versions >= 900
+#include "version.rc"
+VERSION_INFO_DLL("Client Library",NAME_PREFIX "krnl" NAME_SUFFIX)

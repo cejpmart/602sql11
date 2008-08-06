@@ -1,0 +1,28 @@
+/* XPM */
+static char *_badconn_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 6 1",
+"X c Black",
+". c #FF0000",
+"  c None",
+"o c #0000FF",
+"O c #FFFFFF",
+"+ c #848284",
+/* pixels */
+"                ",
+"                ",
+"  .  XXXXX   .  ",
+"  o.XOOOOOX .o  ",
+"   o.O++++O.o   ",
+"  XOo.++++.oX   ",
+"  XO+o.OO.o+X   ",
+"  XO++o..oOOX   ",
+"  XOO++ooOOOX   ",
+"  XOOO.oo.OOX   ",
+"   XO.o++o.X    ",
+"    .oO+OOo.    ",
+"   .oXXXXX o.   ",
+"  .o        o.  ",
+"                ",
+"                "
+};

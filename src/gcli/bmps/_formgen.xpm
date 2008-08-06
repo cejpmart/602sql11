@@ -1,0 +1,26 @@
+/* XPM */
+static char *_formgen_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 4 1",
+". c Black",
+"X c #FF00FF",
+"  c None",
+"o c #FFFFFF",
+/* pixels */
+"                ",
+"                ",
+"  ............. ",
+"  .XXXXXXXXXXX. ",
+"  .XXXXXX....X. ",
+"  .XooooX.oo.X. ",
+"  .X....X....X. ",
+"  .XXXXXXXXXXX. ",
+"  .XXXXXXXXXXX. ",
+"  .XoooooooXoX. ",
+"  .X.......X.X. ",
+"  .XXXXXXXXXXX. ",
+"  ............. ",
+"                ",
+"                ",
+"                "
+};

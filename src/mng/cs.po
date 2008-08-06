@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 602SQL mng\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-01-23 15:30+0100\n"
+"Last-Translator: Janus Drozd\n"
+"Language-Team: Software602\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ClientsConnectedDlg.cpp:108
+msgid "&Warn network clients and wait (max. 60 seconds)"
+msgstr "&Varovat síťové klienty a počkat (max. 60 sekund)"
+
+#: ClientsConnectedDlg.cpp:109
+msgid "&Shutdown the SQL server immediately"
+msgstr "Vypnout S&QL server okamžitě"
+
+#: ClientsConnectedDlg.cpp:111
+msgid "Do you want to:"
+msgstr "Přejete si:"
+
+#: ClientsConnectedDlg.cpp:117
+#: EnterPassword.cpp:115
+#: LoginDlg.cpp:127
+msgid "&OK"
+msgstr "&OK"
+
+#: ClientsConnectedDlg.cpp:120
+#: EnterPassword.cpp:119
+#: LoginDlg.cpp:130
+msgid "&Cancel"
+msgstr "&Storno"
+
+#: EnterPassword.cpp:100
+msgid "If the database file is encrypted the SQL server needs the password."
+msgstr "Je-li databázový soubor zašifrován, SQL server potřebuje heslo."
+
+#: EnterPassword.cpp:106
+msgid "Enter the password:"
+msgstr "Zadejte heslo:"
+
+#: LoginDlg.cpp:111
+msgid "User name:"
+msgstr "Jméno uživatele:"
+
+#: LoginDlg.cpp:118
+msgid "Password:"
+msgstr "Heslo:"
+
+#: LoginDlg.cpp:189
+msgid "Login failed"
+msgstr "Přihlášení na server selhalo."
+
+#: LoginDlg.cpp:189
+#: ServerManagerPanel.cpp:313
+#: ServerManagerPanel.cpp:356
+#: ServerManagerPanel.cpp:376
+msgid "Error"
+msgstr "Chyba"
+
+#: mngmain.cpp:128
+#, c-format
+msgid "602SQL Open Server Manager %u.%u"
+msgstr "602SQL Open Server Manager %u.%u"
+
+#: mngmain.cpp:171
+msgid "602SQL Open Server Manager"
+msgstr "602SQL Open Server Manager"
+
+#: mngmain.cpp:203
+msgid "Restore"
+msgstr "Obnovit"
+
+#: mngmain.cpp:204
+msgid "Close"
+msgstr "Zavřít"
+
+#: mngmain.cpp:332
+msgid "Server is not running"
+msgstr "SQL server neběží"
+
+#: mngmain.cpp:356
+#, c-format
+msgid "The server is running as a system service (PID=%u)."
+msgstr "SQL server běží jako systémová služba (PID=%u)."
+
+#: mngmain.cpp:358
+#, c-format
+msgid "The server is running as a daemon (PID=%u)."
+msgstr "SQL server běží jako démon (PID=%u)."
+
+#: mngmain.cpp:360
+#, c-format
+msgid "The server is running (PID=%u)."
+msgstr "SQL server běží (PID=%u)."
+
+#: mngmain.cpp:367
+#, c-format
+msgid "Version %u.%u, build %u"
+msgstr "Verze %u.%u, build %u"
+
+#: mngmain.cpp:377
+#, c-format
+msgid "Connected clients: %u"
+msgstr "Připojeno klientů: %u"
+
+#: mngmain.cpp:384
+#, c-format
+msgid "Uptime: %u hours, %u minutes"
+msgstr "Zapnut: %u hodin, %u minut"
+
+#: mngmain.cpp:399
+msgid "Interfaces:"
+msgstr "Rozhraní:"
+
+#: mngmain.cpp:405
+#, c-format
+msgid "HTTP tunnelling(%s)"
+msgstr "HTTP tunelování (%s)"
+
+#: mngmain.cpp:422
+msgid "- Not available -"
+msgstr "- Není k dispozici -"
+
+#: ServerManagerPanel.cpp:134
+msgid "Server:"
+msgstr "Server:"
+
+#: ServerManagerPanel.cpp:144
+msgid "Start the server as a system service"
+msgstr "Spustit tento SQL server jako systémovou službu"
+
+#: ServerManagerPanel.cpp:148
+msgid "Specify the password for the database"
+msgstr "Zadat heslo pro databázi"
+
+#: ServerManagerPanel.cpp:155
+msgid "Start Server"
+msgstr "Spustit server"
+
+#: ServerManagerPanel.cpp:158
+msgid "Stop Server"
+msgstr "Zastavit server"
+
+#: ServerManagerPanel.cpp:161
+msgid "&Close"
+msgstr "&Zavřít"
+
+#: ServerManagerPanel.cpp:164
+msgid "Server information"
+msgstr "Informace o serveru"
+
+#: ServerManagerPanel.cpp:194
+msgid "Current server log:"
+msgstr "Aktuální log serveru:"
+
+#: ServerManagerPanel.cpp:199
+msgid "Refresh now"
+msgstr "Aktualizovat nyní"
+
+#: ServerManagerPanel.cpp:202
+msgid "Refresh state every:"
+msgstr "Obnovit stav každých:"
+
+#: ServerManagerPanel.cpp:205
+msgid "0"
+msgstr "0"
+
+#: ServerManagerPanel.cpp:208
+msgid "seconds"
+msgstr "sekund"
+
+#: ServerManagerPanel.cpp:221
+msgid "Start the server as a daemon"
+msgstr "Spustit tento SQL server jako démona"
+
+#: ServerManagerPanel.cpp:312
+#, c-format
+msgid "Error %u when starting the SQL server."
+msgstr "Při staru serveru došlo k chybě %u."
+
+#: ServerManagerPanel.cpp:332
+#, c-format
+msgid "%u clients are connected to the SQL server at the momment."
+msgstr "%u klientů je nyní připojeno na SQL server."
+
+#: ServerManagerPanel.cpp:355
+#, c-format
+msgid "Error %u when connecting to the server."
+msgstr "Při připojování k serveru došlo k chybě %u."
+
+#: ServerManagerPanel.cpp:376
+msgid "Error stopping the SQL server."
+msgstr "Při zastavování serveru došlo k chybě."
+
+#: ClientsConnectedDlg.h:40
+msgid "Clients connected to the server"
+msgstr "Na server jsou připojeni klienti"
+
+#: EnterPassword.h:40
+msgid "Enter password"
+msgstr "Zadejte heslo"
+
+#: LoginDlg.h:40
+msgid "Login to the SQL server"
+msgstr "Přihlášení na SQL server"
+

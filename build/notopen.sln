@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xml", "xml.vcproj", "{0CE675E9-2D5A-4780-BA38-8D032BB9C64C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "instsupp", "instsupp.vcproj", "{0CE675E9-2D5A-4781-BA38-8D032BB9C64C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CE675E9-2D5A-4780-BA38-8D032BB9C64C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CE675E9-2D5A-4780-BA38-8D032BB9C64C}.Debug|Win32.Build.0 = Debug|Win32
+		{0CE675E9-2D5A-4780-BA38-8D032BB9C64C}.Release|Win32.ActiveCfg = Release|Win32
+		{0CE675E9-2D5A-4780-BA38-8D032BB9C64C}.Release|Win32.Build.0 = Release|Win32
+		{0CE675E9-2D5A-4781-BA38-8D032BB9C64C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CE675E9-2D5A-4781-BA38-8D032BB9C64C}.Debug|Win32.Build.0 = Debug|Win32
+		{0CE675E9-2D5A-4781-BA38-8D032BB9C64C}.Release|Win32.ActiveCfg = Release|Win32
+		{0CE675E9-2D5A-4781-BA38-8D032BB9C64C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

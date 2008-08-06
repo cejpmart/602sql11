@@ -1,0 +1,26 @@
+/* XPM */
+static char *_popup_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 4 1",
+". c Black",
+"o c #0000FF",
+"  c None",
+"X c #FFFFFF",
+/* pixels */
+"                ",
+"                ",
+"                ",
+"    ........    ",
+"    .XXXXXX.    ",
+"    .oooooo.    ",
+"    .XXXXXX.    ",
+"    .oooooo.    ",
+"    .XXXXXX.    ",
+"    .oooooo.    ",
+"    .XXXXXX.    ",
+"    .oooooo.    ",
+"    .XXXXXX.    ",
+"    ........    ",
+"                ",
+"                "
+};

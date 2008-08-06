@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the Crypto++ library</Header>
+
+<p><ident>Crypto++ Library</ident> is a free C++ class library of cryptographic schemes. Versions 5.21, 5.4 and 5.5 have been tested in the build process. 
+The version you need depends on the version of the C++ compiler you use.</p>
+
+<ol>
+<li>Download the source distribution of the <ident>Crypto++ Library</ident> from <a href="http://www.cryptopp.com"><ident>http://www.cryptopp.com</ident></a></li>
+<li>Unpack the distribution to the <file>$(SQLROOT)/../crypto</file> directory.</li>
+</ol>
+
+<p>If the Crypto++ root directory is located elsewhere, the configuration must be changed. On the Windows platform update the variable <ident>CRYPTOPPDIR</ident> on the User Macros page in the the "common" property sheet. On Unix, specify the location among the configure parameters (see <a href="BUILD_CONFIGURE.xml">Building the project on Unix platforms</a>). The directory name <file>crypto</file> must not be changed.</p>
+
+<Section-2><Header>Building on the Windows platform</Header>
+<ol start="3">
+<li>Open the project file and build the static library <file>cryptlib.lib</file> in the Debug and Release configurations.</li>
+</ol>
+
+<p>The Microsoft Visual Studio .NET 2005 project contained in the source distribution uses the static C runtime library by default.</p> 
+</Section-2>
+
+<Section-2><Header>Building on Unix platforms</Header>
+
+<p>On Unix platforms there are more steps necessary because the project does not support configure.</p>
+<ol start="3">
+<li>Create the <file>debug</file> and <file>release</file> subdirectories in the <file>crypto</file> directory.</li>
+<li>Edit the <file>GNUmakefile</file> and define <ident>CXXFLAGS=-fpic -g</ident> at the beginning of the file.</li>
+<li>Do
+<code>make libcryptopp.a</code> 
+and move <file>libcryptopp.a</file> to the <file>debug</file> subdirectory.</li>
+<li>Edit the <file>GNUmakefile</file> and define <ident>CXXFLAGS=-fpic -O2 -DNDEBUG</ident> at the beginning of the file. Do not  use flags like <ident>-ffunction-sections</ident>, <ident>-fdata-sections</ident> or <ident>--gc-sections</ident>.</li>
+<li>Do 
+<code>make clean
+make libcryptopp.a</code> 
+and move <file>libcryptopp.a</file> to the release subdirectory.</li>
+</ol>
+
+<p>Some versions of the GCC compiler/linker have problems with some versions of <ident>Crypto++</ident>.</p> 
+<p>If you cannot compile a release version of <file>integer.cpp</file> (<file>GCC 3.3.3</file> with <file>Crypto++ 5.21</file>), remove optimization for this file by adding:
+<code>integer.o: CXXFLAGS+=-O0</code>
+to the <file>GNUmakefile</file>.</p> 
+<p>If you cannot compile <file>vmac.cpp</file> (<file>GCC 3.3.3</file>, some older <file>GCC 4.1</file> with <file>Crypto++ 5.5</file>), remove it from the source directory.</p>
+<p>If linker says "<ident>non-virtual thunk ... discarded ...</ident>" (<file>GCC 3.3.3</file>, some older <file>GCC 4.1</file> with <file>Crypto++ 5.5</file>), use <file>Crypto++ 5.21</file>.</p>
+</Section-2>
+
+</Section-1>
+
+

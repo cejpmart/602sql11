@@ -1,0 +1,73 @@
+#Makes:    PREFsqlEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=srv
+VPATH=$(top_dir)/src/$(ownsubdir)
+binname=@PREF@sql@EXT@
+seclib=@PREF@sec@EXT@
+ziplib=@PREF@zip@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/src/common -I $(top_dir)/src/common/unix \
+ -I $(top_dir)/include/sec -I $(top_dir)/include/zip \
+ -I $(top_dir)/.. -I .. -I $(top_dir)/@PCREDIR@/@CONFNAME@
+DEFINES=-DSRVR -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DCOMPILED_WITH="\"$(CXXFLAGS)\""
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+CXXFLAGS=@CXXFLAGS@ -funsigned-char
+CFLAGS=@CFLAGS@ -funsigned-char
+
+LDFLAGS='-Wl,-rpath=$$ORIGIN/../lib/@pkgsubdir@' -Wl,-t,--no-undefined @LDFLAGS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L $(top_dir)/@PCREDIR@/@CONFNAME@/.libs \
+ -L $(top_dir)/@CRYPTOPPDIR@/@CONFNAME@ -L /usr/lib -v @NODEFAULTLIBS@
+LDLIBS=-Wl,-Bstatic,-l$(ziplib),-l$(seclib),-lcryptopp,-lpcre -Wl,-Bdynamic,-lpthread -ldl @BINSTDLIBS@
+# in 64bit libpthread is only static
+.PHONY: all install uninstall mostlyclean clean
+
+all: $(OUTPUTPATH)/bin/$(binname)
+
+$(OUTPUTPATH)/bin:
+	install -d $(OUTPUTPATH)/bin
+
+$(OUTPUTPATH)/bin/$(binname): $(binname) | $(OUTPUTPATH)/bin
+	cp $(binname) $(OUTPUTPATH)/bin
+
+SOURCES1 = sql2.cpp comptab.cpp kurzor.cpp replica.cpp comm0.cpp \
+	dispatch.cpp frame.cpp ffa.cpp dheap.cpp btree.cpp maintan.cpp \
+	smemory.cpp snetapi.cpp rights.cpp sqlcomp.cpp table.cpp \
+	tmaint.cpp swcompil.cpp worm.cpp swprocs.cpp \
+	sort.cpp callext.cpp extbtree.cpp profiler.cpp extlob.cpp
+SOURCES2 = unix/serverux.cpp unix/tcpipnlm.cpp 
+# Order makes difference on multiprocessor machines with -jn : sql2 takes longest time to compile, thus goes first.
+ 
+OBJECTS1 = $(SOURCES1:.cpp=.o) 
+OBJECTS2 = $(SOURCES2:.cpp=.o) 
+.SECONDARY: $(OBJECTS1) $(OBJECTS2) 
+
+$(OBJECTS2): | $(top_dir)/build/@CONFNAME@/$(ownsubdir)/unix
+$(OBJECTS2): ../../include/common/wbvers.h
+
+$(top_dir)/build/@CONFNAME@/$(ownsubdir)/unix:
+	install -d unix
+
+callext.o: CPPFLAGS+=-O0
+# Otherwise the stack frame is damaged by the optimization
+
+$(binname): $(OBJECTS1) $(OBJECTS2)
+	g++ $(LDFLAGS) -o $(binname) $(OBJECTS1) $(OBJECTS2) $(LDLIBS)
+
+#### Other targets #################################################################
+clean:
+	rm -f $(binname) *.o unix/*.o
+install: all
+	install -d $(prefix)bin
+	cp $(OUTPUTPATH)/bin/$(binname) $(prefix)bin
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES1:.cpp=.d)

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8,00"
+	Name="install"
+	ProjectGUID="{F69FC282-397E-4EB3-AA2A-E9ECDD1FD219}"
+	RootNamespace="install"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\common.vsprops;.\win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				ReBuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				CleanCommandLine=""
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\common.vsprops;.\win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				ReBuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				CleanCommandLine=""
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\common.vsprops;.\x64.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				ReBuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				CleanCommandLine=""
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)..\output\$(ConfigurationName)_$(PlatformName)"
+			IntermediateDirectory="$(ConfigurationName)_$(PlatformName)_$(ProjectName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\common.vsprops;.\x64.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				ReBuildCommandLine="nmake -f..\build\install.mak CONF_NAME=$(ConfigurationName) OUT_DIR=$(OutDir) NAME_PREFIX=$(NamePrefix) NAME_SUFFIX=$(NameSuffix) INST_ROOT=$(InstRoot) LANGS=$(LANGS)"
+				CleanCommandLine=""
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F7B81288-604C-44E8-8694-03E1834F8965}"
+			RelativePathToProject=".\gcli.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{0CE675E9-2D5A-4780-BA39-8D032BB9C64C}"
+			RelativePathToProject=".\krnl.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{0CE675E9-2D5A-4780-BA39-8D032BB9C64E}"
+			RelativePathToProject=".\odbcw.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{BAE39D5C-9623-4EEB-809E-0D05E1EA6F8F}"
+			RelativePathToProject=".\sec.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{D25E21CE-BE37-42F0-A6F3-14B13EEB9AA2}"
+			RelativePathToProject=".\srv.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{CA67A946-5BE6-4CF6-8724-CE66B9F3C089}"
+			RelativePathToProject=".\svc.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{A4BBD132-2687-4E37-91E1-5F74A67D3592}"
+			RelativePathToProject=".\mng.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F97551D7-B2DF-47DA-909D-3CF1C9DB7895}"
+			RelativePathToProject=".\ccli.vcproj"
+		/>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<Filter
+			Name="Aux Files"
+			>
+			<File
+				RelativePath=".\install.mak"
+				>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

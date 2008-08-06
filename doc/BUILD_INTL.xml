@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building libintl</Header>
+
+<p><ident>Libintl</ident> is a library that provides native language support to programs. It is part of <ident>Gettext</ident>.</p> 
+
+
+<Section-2><Header>Windows platform</Header>
+
+<p>For Windows the GnuWin32 version of <ident>libintl</ident> may be used. It is avalilable from <a href="http://gnuwin32.sourceforge.net/packages/libintl.htm"><ident>http://gnuwin32.sourceforge.net/packages/libintl.htm</ident></a>.</p> 
+<ol>
+<li>Download the <strong>Setup</strong> program which installs the binary distribution of <ident>libintl</ident> containing all necessary files.</li> 
+<li>Copy <file>libintl3.dll</file> and <file>libiconv2.dll</file> from the binary distribution to <file>$(SQL_ROOT)\instroot\debug</file> and <file>$(SQL_ROOT)\instroot\release</file> directories so that they can be used by the project binaries.</li>
+<li>Copy the <file>libintl.lib</file> from the distribution into the <file>$(SQL_ROOT)\tools\msw</file> directory.</li>
+<li>The header file <file>libintl.h</file> from the distribution must be updated so that it does not interfere with functions like printf. Find the line containing <code>#if !0</code> and replace it with <code>#if 0</code> Save the updated file in the <file>$(SQL_ROOT)\include\common</file> directory as <file>libintl-msw.h</file>.</li>
+</ol>
+
+<p>Steps 3 and 4 do not have to be done if you use version libintl3-0.14. A copy of <file>libintl.lib</file> and <file>libintl-msw.h</file> from this version are already included in the project.</p>
+
+</Section-2>
+
+<Section-2><Header>Unix platforms</Header>
+
+<p><ident>Libintl</ident> is a standard part of Unix distributions. The project compiles with the standard <ident>libintl.h</ident> header file. No changes are needed.</p>
+</Section-2>
+</Section-1>

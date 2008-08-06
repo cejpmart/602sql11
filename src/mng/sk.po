@@ -1,0 +1,222 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 602SQL\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-08-06 08:51+0100\n"
+"Last-Translator: Janus Drozd\n"
+"Language-Team: Software602\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ClientsConnectedDlg.cpp:108
+msgid "&Warn network clients and wait (max. 60 seconds)"
+msgstr ""
+
+#: ClientsConnectedDlg.cpp:109
+msgid "&Shutdown the SQL server immediately"
+msgstr ""
+
+#: ClientsConnectedDlg.cpp:111
+msgid "Do you want to:"
+msgstr ""
+
+#: ClientsConnectedDlg.cpp:117
+#: EnterPassword.cpp:115
+#: LoginDlg.cpp:127
+msgid "&OK"
+msgstr ""
+
+#: ClientsConnectedDlg.cpp:120
+#: EnterPassword.cpp:119
+#: LoginDlg.cpp:130
+msgid "&Cancel"
+msgstr ""
+
+#: EnterPassword.cpp:100
+msgid "If the database file is encrypted the SQL server needs the password."
+msgstr ""
+
+#: EnterPassword.cpp:106
+msgid "Enter the password:"
+msgstr ""
+
+#: LoginDlg.cpp:111
+msgid "User name:"
+msgstr ""
+
+#: LoginDlg.cpp:118
+msgid "Password:"
+msgstr ""
+
+#: LoginDlg.cpp:189
+msgid "Login failed"
+msgstr ""
+
+#: LoginDlg.cpp:189
+#: ServerManagerPanel.cpp:300
+#: ServerManagerPanel.cpp:326
+#: ServerManagerPanel.cpp:369
+#: ServerManagerPanel.cpp:389
+msgid "Error"
+msgstr ""
+
+#: mngmain.cpp:134
+#, c-format
+msgid "602SQL Open Server Manager %u.%u"
+msgstr ""
+
+#: mngmain.cpp:177
+msgid "602SQL Open Server Manager"
+msgstr ""
+
+#: mngmain.cpp:209
+msgid "Restore"
+msgstr ""
+
+#: mngmain.cpp:210
+msgid "Close"
+msgstr ""
+
+#: mngmain.cpp:329
+msgid "Server is not running"
+msgstr ""
+
+#: mngmain.cpp:353
+#, c-format
+msgid "The server is running as a system service (PID=%u)."
+msgstr ""
+
+#: mngmain.cpp:355
+#, c-format
+msgid "The server is running as a daemon (PID=%u)."
+msgstr ""
+
+#: mngmain.cpp:357
+#, c-format
+msgid "The server is running (PID=%u)."
+msgstr ""
+
+#: mngmain.cpp:364
+#, c-format
+msgid "Version %u.%u, build %u"
+msgstr ""
+
+#: mngmain.cpp:374
+#, c-format
+msgid "Connected clients: %u"
+msgstr ""
+
+#: mngmain.cpp:381
+#, c-format
+msgid "Uptime: %u hours, %u minutes"
+msgstr ""
+
+#: mngmain.cpp:396
+msgid "Interfaces:"
+msgstr ""
+
+#: mngmain.cpp:402
+#, c-format
+msgid "HTTP tunnelling(%s)"
+msgstr ""
+
+#: mngmain.cpp:419
+msgid "- Not available -"
+msgstr ""
+
+#: ServerManagerPanel.cpp:134
+msgid "Server:"
+msgstr ""
+
+#: ServerManagerPanel.cpp:144
+msgid "Start the server as a system service"
+msgstr ""
+
+#: ServerManagerPanel.cpp:148
+msgid "Specify the password for the database"
+msgstr ""
+
+#: ServerManagerPanel.cpp:155
+msgid "Start Server"
+msgstr ""
+
+#: ServerManagerPanel.cpp:158
+msgid "Stop Server"
+msgstr ""
+
+#: ServerManagerPanel.cpp:161
+msgid "&Close"
+msgstr ""
+
+#: ServerManagerPanel.cpp:164
+msgid "Server information"
+msgstr ""
+
+#: ServerManagerPanel.cpp:194
+msgid "Current server log:"
+msgstr ""
+
+#: ServerManagerPanel.cpp:199
+msgid "Refresh now"
+msgstr ""
+
+#: ServerManagerPanel.cpp:202
+msgid "Refresh state every:"
+msgstr ""
+
+#: ServerManagerPanel.cpp:205
+msgid "0"
+msgstr ""
+
+#: ServerManagerPanel.cpp:208
+msgid "seconds"
+msgstr ""
+
+#: ServerManagerPanel.cpp:221
+msgid "Start the server as a daemon"
+msgstr ""
+
+#: ServerManagerPanel.cpp:296
+msgid "No service is registerd for the selected server. Should it be registered now?"
+msgstr ""
+
+#: ServerManagerPanel.cpp:296
+msgid "Confirm"
+msgstr ""
+
+#: ServerManagerPanel.cpp:300
+msgid "Cannot register the service"
+msgstr ""
+
+#: ServerManagerPanel.cpp:325
+#, c-format
+msgid "Error %u when starting the SQL server."
+msgstr ""
+
+#: ServerManagerPanel.cpp:345
+#, c-format
+msgid "%u clients are connected to the SQL server at the momment."
+msgstr ""
+
+#: ServerManagerPanel.cpp:368
+#, c-format
+msgid "Error %u when connecting to the server."
+msgstr ""
+
+#: ServerManagerPanel.cpp:389
+msgid "Error stopping the SQL server."
+msgstr ""
+
+#: ClientsConnectedDlg.h:40
+msgid "Clients connected to the server"
+msgstr ""
+
+#: EnterPassword.h:40
+msgid "Enter password"
+msgstr ""
+
+#: LoginDlg.h:40
+msgid "Login to the SQL server"
+msgstr ""
+

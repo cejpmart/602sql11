@@ -1,0 +1,75 @@
+#include <winver.h>
+#include "wbvers.h"
+
+#if WBVERS>=1100
+#define PRODUCT "602SQL Open Server"
+#else
+#define PRODUCT "602SQL"
+#endif
+
+#ifdef ENGLISH
+#define VERSION_INFO_(file_descr,int_name,ftype,suff)\
+1 VERSIONINFO                                      \
+    FILEVERSION    VERS_1,VERS_2,VERS_3,VERS_4     \
+    PRODUCTVERSION VERS_1,VERS_2,VERS_3,VERS_4     \
+    FILEFLAGSMASK  0x3f                            \
+    FILEFLAGS      0                               \
+    FILEOS         VOS__WINDOWS32                  \
+    FILETYPE       ftype                           \
+    FILESUBTYPE    0                               \
+BEGIN                                              \
+  BLOCK "StringFileInfo"                           \
+  BEGIN                                            \
+    BLOCK "040904e4"                               \
+    BEGIN                                          \
+      VALUE "CompanyName",     "Software602 a.s."  \
+      VALUE "FileDescription", "602SQL " file_descr\
+      VALUE "FileVersion",     VERS_STR            \
+      VALUE "InternalName",    int_name            \
+      VALUE "LegalCopyright",  "Copyright Janus Drozd 1993-2007"\
+      VALUE "OriginalFilename",int_name suff       \
+      VALUE "ProductName",     PRODUCT             \
+      VALUE "ProductVersion",  VERS_STR            \
+    END                                            \
+  END                                              \
+  BLOCK "VarFileInfo"                              \
+  BEGIN                                            \
+    VALUE "Translation"                            \
+      0x0409,1252                                  \
+  END                                              \
+END
+#else
+#define VERSION_INFO_(file_descr,int_name,ftype,suff)\
+1 VERSIONINFO                                      \
+    FILEVERSION    VERS_1,VERS_2,VERS_3,VERS_4     \
+    PRODUCTVERSION VERS_1,VERS_2,VERS_3,VERS_4     \
+    FILEFLAGSMASK  0x3f                            \
+    FILEFLAGS      0                               \
+    FILEOS         VOS__WINDOWS32                         \
+    FILETYPE       ftype                           \
+    FILESUBTYPE    0                               \
+BEGIN                                              \
+  BLOCK "StringFileInfo"                           \
+  BEGIN                                            \
+    BLOCK "040504e2"                               \
+    BEGIN                                          \
+      VALUE "CompanyName",     "Software602 a.s.\0"\
+      VALUE "FileDescription", "602SQL " file_descr\
+      VALUE "FileVersion",     VERS_STR            \
+      VALUE "InternalName",    int_name            \
+      VALUE "LegalCopyright",  "Copyright Januš Drózd 1993-2007"\
+      VALUE "OriginalFilename",int_name suff       \
+      VALUE "ProductName",     PRODUCT             \
+      VALUE "ProductVersion",  VERS_STR            \
+    END                                            \
+  END                                              \
+  BLOCK "VarFileInfo"                              \
+  BEGIN                                            \
+    VALUE "Translation"                            \
+      0x0405,1250                                  \
+  END                                              \
+END
+#endif
+
+#define VERSION_INFO_EXE(file_descr,int_name) VERSION_INFO_(file_descr,int_name,VFT_APP,".exe")
+#define VERSION_INFO_DLL(file_descr,int_name) VERSION_INFO_(file_descr,int_name,VFT_DLL,".dll")

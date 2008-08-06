@@ -1,0 +1,60 @@
+// Generated headers for lazy dynamic linking
+// XML_EXT_NAME DllXMLExt
+
+struct CXMLFormStruct;
+
+struct t_xsd_gen_params;
+CFNC   BOOL link_export_to_file(t_ucd * ucdp, const char * dad, t_file_outbuf & fo, const char * fname, tcursnum curs, int * error_node);
+CFNC   BOOL link_export_to_memory(t_ucd * ucdp, const char * dad, t_mem_outbuf & fo, tcursnum curs, int * error_node);
+CFNC   BOOL link_import_from_file(t_ucd * ucdp, const char * dad, const char * fname, int * error_node, char ** out_buffer);
+CFNC   BOOL link_import_from_memory(t_ucd * ucdp, const char * dad, const char * buffer, int xmlsize, int * error_node, char ** out_buffer);
+CFNC   BOOL WINAPI link_Export_to_XML( cdp_t cdp, const char * dad_ref, const char * fname, tcursnum curs, struct t_clivar * hostvars, int hostvarscount );
+CFNC   BOOL WINAPI link_Import_from_XML( cdp_t cdp, const char * dad_ref, const char * fname, struct t_clivar * hostvars, int hostvarscount );
+CFNC   BOOL WINAPI link_Export_to_XML_buffer( cdp_t cdp, const char * dad_ref, char * buffer, int bufsize, int * xmlsize, tcursnum curs, struct t_clivar * hostvars, int hostvarscount );
+CFNC   BOOL WINAPI link_Export_to_XML_buffer_alloc( cdp_t cdp, const char * dad_ref, char * * buffer, tcursnum curs, struct t_clivar * hostvars, int hostvarscount );
+CFNC   BOOL WINAPI link_Import_from_XML_buffer( cdp_t cdp, const char * dad_ref, const char * buffer, int xmlsize, struct t_clivar * hostvars, int hostvarscount );
+CFNC   BOOL WINAPI link_Verify_DAD( cdp_t cdp, const char * dad, int * line, int * column );
+CFNC   char * WINAPI link_get_xml_form( cdp_t cdp, tobjnum objnum, BOOL translate, const char * url_prefix );
+CFNC   BOOL WINAPI link_Get_DAD_params(cdp_t cdp, const char * dad, t_dad_param ** pars, int * count);
+CFNC   BOOL WINAPI link_GetDadFromXMLForm(cdp_t cdp, tobjnum objnum, char *DADName, bool Inp = false);
+CFNC   char * WINAPI link_Merge_XML_form(cdp_t cdp,const char *xml_form_ref,const char *data);
+CFNC   char * WINAPI link_Merge_XML_formM(cdp_t cdp,const char *xml_form_ref,int xml_form_ref_size,const char *data,int *result_size,char **error_message);
+CFNC   char * link_make_source(t_dad_root * dad_tree, bool alter, cdp_t object_cdp);
+CFNC   t_ucd_cl_602 * link_new_t_ucd_cl_602(cdp_t cdpIn);
+CFNC   t_ucd_odbc * link_new_t_ucd_cl_odbc(t_pconnection connIn, cdp_t reporting_cdpIn);
+CFNC   void link_delete_t_ucd_cl(t_ucd_cl * cdcl);
+CFNC   char * link_new_chars(int len);
+CFNC   void link_delete_chars(char * str);
+CFNC   char * WINAPI link_convert2utf8(char * system_def);
+CFNC   BOOL WINAPI link_NewXMLForm(cdp_t cdp, const CXMLFormStruct *Struct, const char * fname, tcursnum curs, t_clivar * hostvars, int hostvars_count);
+CFNC   bool link_init_platform_utils(t_ucd * ucdp);
+CFNC   void link_close_platform_utils(void);
+CFNC   bool WINAPI link_create_default_schema_design(cdp_t cdp, void * owner, const char * schema_file, const char *schema_name, const char *folder_name, t_dad_root * dad_tree, t_xsd_gen_params * gen_params, LPERRCALLBACK err_callback);
+CFNC   t_dad_root * link_parse(t_ucd * ucdp, const char * source, int * pline = NULL, int * pcolumn = NULL);
+CFNC   dad_element_node * link_new_dad_element_node(void);
+CFNC   dad_attribute_node * link_new_dad_attribute_node(void);
+CFNC   t_dad_root * link_new_t_dad_root(int sys_charsetIn);
+CFNC   t_dad_column_node * link_new_t_dad_column_node(t_dad_column_node & orig);
+CFNC   t_xml_context * link_new_xml_context(t_dad_root * dad_treeIn);
+CFNC   const char * link_get_encoding_name(int num);
+CFNC   BOOL WINAPI link_DSParserOpen(cdp_t cdp, HANDLE *pHandle);
+CFNC   void WINAPI link_DSParserClose(HANDLE Handle);
+CFNC   BOOL WINAPI link_DSParserSetStrProp(HANDLE Handle, DSPProp Prop, const char *Value);
+CFNC   BOOL WINAPI link_DSParserSetIntProp(HANDLE Handle, DSPProp Prop, int Value);
+CFNC   BOOL WINAPI link_DSParserGetStrProp(HANDLE Handle, DSPProp Prop, const char **Value);
+CFNC   BOOL WINAPI link_DSParserGetIntProp(HANDLE Handle, DSPProp Prop, int *Value);
+CFNC   BOOL WINAPI link_DSParserParse(HANDLE Handle, const char *Source);
+CFNC   BOOL WINAPI link_DSParserGetObjectName(HANDLE Handle, int Index, char *Name, tcateg *Categ);
+CFNC   BOOL WINAPI link_DSParserGetColumnProps(HANDLE Handle, const char *TableName, int ColumnIndex, char *ColumnName, int *Type, t_specif *Specif, int *Exclude);
+CFNC   BOOL WINAPI link_DSParserSetColumnProps(HANDLE Handle, const char *TableName, const char *ColumnName, int Type, t_specif Specif, bool Exclude);
+CFNC   BOOL WINAPI link_DSParserGetTableExcludeFlag(HANDLE Handle, const char *TableName, bool *Exclude);
+CFNC   BOOL WINAPI link_DSParserSetTableExcludeFlag(HANDLE Handle, const char *TableName, bool Exclude);
+CFNC   BOOL WINAPI link_DSParserCreateObjects(HANDLE Handle);
+CFNC   BOOL WINAPI link_DSParserGetLastError(HANDLE Handle, int *ErrCode, const char **ErrMsg);
+CFNC   MFDState WINAPI link_MatchFormAndDAD(cdp_t cdp, const char *Form, const char *DAD);
+CFNC   t_mem_outbuf * link_new_t_mem_outbuf(char * bufferIn, int bufsizeIn);
+CFNC   t_file_outbuf * link_new_t_file_outbuf(void);
+CFNC   void link_delete_t_outbuf(t_outbuf * ob);
+CFNC   uns32 WINAPI link_XMLGetVersion(void);
+
+;

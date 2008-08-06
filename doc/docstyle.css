@@ -1,0 +1,35 @@
+/*  WINDOWS  */
+
+body 	{background-color : #FFFFE0;color : black;font-family : Arial, Helvetica ;font-size : 9pt;}
+A:HOVER {color : green;}
+td,div 	{font-family : Arial, Helvetica;font-size : 9pt}
+h1	{text-align: center;font-size:18pt}
+h2	{font-size: 13pt}
+h2.function {font : bold 12pt Arial, Helvetica; background-color : #FFFFBF;line-height:30px;padding-left:5px;border : 1px solid black;clear : both;}
+h3 {font : bold 9pt Arial, sans-serif; margin :5px 0px 2px 0px}
+h4 {size: normal; font:bold;}
+p	{padding-bottom : 3px; margin-top : 1px; margin-bottom : 2px; clear : both}
+OL 	{MARGIN-TOP: 2px;MARGIN-BOTTOM: 3px}
+UL 	{MARGIN-TOP: 4px;MARGIN-BOTTOM: 10px;}
+LI 	{MARGIN-BOTTOM: 2px;clear : both;}
+.typ,.tab2 {font : 10pt Courier New, Courier; margin-bottom : 12px;}
+b 	{font : bold}
+pre {	font : 8pt Courier New;
+	background-color : White;
+	border : 1px solid black;
+	margin : 12px 4px 20px 2px;
+	padding : 4px 4px 4px 4px; }
+table pre code { border: none; }
+ul.viz 	{ margin : 10px 0px 0px 25px;list-style-image: url(images/viz.gif);}
+ul.viz a {position:relative;left:+5px;top:-1px;color:red}
+img 	{float:left}
+object 	{display:none}
+
+.border {background: #FFFFFF; width:99%; border: thin solid black; padding:4px; margin-bottom:5px}
+.floatno {float:none;}
+table.navigace {border: 1px solid; border-color: #D98839}
+table.navigace td {font-size:8pt}
+
+ul.subs { margin : 0px 0px 25px 25px;list-style-image: url(images/viz.gif);}
+p.subs { margin-top : 25px; font-weight:bold;}
+.pme {font : 10pt Courier New, Courier; margin-top : 10px; margin-left : 10px}

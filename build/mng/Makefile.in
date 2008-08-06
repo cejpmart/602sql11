@@ -1,0 +1,57 @@
+#Makes:    PREFmngEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=mng
+VPATH=$(top_dir)/src/$(ownsubdir)
+binname=@PREF@mng@EXT@
+krnllib=@PREF@krnl@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+GTKDIRS=-I@GTKINCDIR@/include/gtk-2.0 -I@GTKINCDIR@/lib/gtk-2.0/include -I@GTKINCDIR@/include/atk-1.0 -I@GTKINCDIR@/include/pango-1.0 -I@GTKINCDIR@/include/glib-2.0 -I@GTKINCDIR@/lib/glib-2.0/include 
+XDIRS=-I/usr/X11R6/include -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/freetype2/config
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) -I $(top_dir)/include/$(ownsubdir)/xrc \
+ -I $(top_dir)/src/$(ownsubdir) \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/src/common -I $(top_dir)/src/common/unix \
+ -I $(top_dir)/include/krnl -I $(top_dir)/include/sec -I $(top_dir)/include/zip \
+ -I .. \
+ -I @SETUPINCL@ -I @WXLIBINCL@ $(GTKDIRS) $(XDIRS) 
+DEFINES=-D__WXGTK__ -D__WXGTK20__
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+# -MMD predelava .d soubory.
+CXXFLAGS=@CXXFLAGS@ -fpic -fexceptions -MMD #-funsigned-char 
+CFLAGS=@CFLAGS@ -fpic #-funsigned-char
+
+LDFLAGS='-Wl,-rpath=$$ORIGIN/../lib/@pkgsubdir@' @LDFLAGS@ -Wl,--no-undefined,-t -v @NODEFAULTLIBS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L  @WXLIBDIR@ -L /usr/lib
+LDLIBS=-l$(krnllib) -Wl,-Bdynamic @WXLIBS2@ @BINSTDLIBS@
+
+all: $(OUTPUTPATH)/bin/$(binname)
+
+$(OUTPUTPATH)/bin/$(binname): $(binname) 
+	install -d $(OUTPUTPATH)/bin
+	cp $(binname) $(OUTPUTPATH)/bin
+     
+SOURCES=mngmain.cpp ServerManagerPanel.cpp ClientsConnectedDlg.cpp EnterPassword.cpp \
+ LoginDlg.cpp
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+$(binname): $(OBJECTS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+#### Other targets #################################################################
+clean:
+	rm -f *.o $(binname)
+install: all
+	install -d $(prefix)bin
+	cp $(OUTPUTPATH)/bin/$(binname) $(prefix)bin
+
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES:.cpp=.d)

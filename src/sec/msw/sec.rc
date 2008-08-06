@@ -1,0 +1,2 @@
+#include "version.rc"
+VERSION_INFO_DLL("Security Library",NAME_PREFIX "sec" NAME_SUFFIX)

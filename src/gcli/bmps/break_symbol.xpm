@@ -1,0 +1,15 @@
+/* XPM */
+char *break_symbol_xpm[] = {
+"9 9 3 1",
+" 	c #E0E0E0",
+".	c #000000",
+"X	c #FF0000",
+"  .....  ",
+" .XXXXX. ",
+".XXXXXXX.",
+".XXXXXXX.",
+".XXXXXXX.",
+".XXXXXXX.",
+".XXXXXXX.",
+" .XXXXX. ",
+"  .....  "};

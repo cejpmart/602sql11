@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>The structure of directories</Header>
+
+<p>This is the description of the directory structure of the project.</p>
+
+<Section-3><Header>src</Header>
+<p>Contains source directories for individual libraries and executables. The common subdirectory contains mostly source code included in other source files in multiple projects. All subdirectories may contain subdirectories with platform-dependent files (like Windows resource files) and for specific include files (like WX dialog definitions, xpm files).</p>
+
+</Section-3>
+<Section-3><Header>include</Header>
+<p>Contains header files for individual libraries and executables. The common subdirectory contains headers used in multiple projects.</p>
+</Section-3>
+
+<Section-3><Header>output</Header>
+<p>Contains subdirectories for the individual configurations. They contain libraries and executables created by the build process.</p>
+</Section-3>
+
+<Section-3><Header>build</Header>
+<p>Contains the Windows project and property sheet files and Unix configure-related files. On Unix subdirectories contain Makefile.in files for the individual projects.</p>
+<p>During the build process:
+<ul>
+<li>On Windows, subdirectories are created for every project/configuration for the intermediate files (like obj, res files).</li>
+<li>On Unix, subdirectories are created for every configuration.</li>
+</ul>
+</p>
+</Section-3>
+
+<Section-3><Header>tools</Header>
+<p>Contains various tools used in the build process.</p>
+</Section-3>
+
+</Section-1>

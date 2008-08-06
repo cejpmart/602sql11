@@ -1,0 +1,111 @@
+#Makes:    libPREFdvlpEXT, PREFgcliEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=gcli
+VPATH=$(top_dir)/src/$(ownsubdir)
+libname=lib@PREF@dvlp@EXT@
+binname=@PREF@gcli@EXT@
+fulllibname=$(libname).so.$(MAJOR).$(MINOR)
+krnllib=@PREF@krnl@EXT@
+dvlplib=@PREF@dvlp@EXT@
+seclib=@PREF@sec@EXT@
+ziplib=@PREF@zip@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+GTKDIRS=-I@GTKINCDIR@/include/gtk-2.0 -I@GTKINCDIR@/lib/gtk-2.0/include -I@GTKINCDIR@/include/atk-1.0 -I@GTKINCDIR@/include/pango-1.0 -I@GTKINCDIR@/include/glib-2.0 -I@GTKINCDIR@/lib/glib-2.0/include 
+XDIRS=-I/usr/X11R6/include -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/freetype2/config
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) -I $(top_dir)/include/$(ownsubdir)/xrc \
+ -I $(top_dir)/src/$(ownsubdir) \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/src/common -I $(top_dir)/src/common/unix \
+ -I $(top_dir)/include/krnl -I $(top_dir)/include/sec -I $(top_dir)/include/zip \
+ -I $(top_dir)/src/mng -I .. \
+ -I @SETUPINCL@ -I @WXLIBINCL@ $(GTKDIRS) $(XDIRS) 
+DEFINES=-D__WXGTK__ -D__WXGTK20__
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+CXXFLAGS=@CXXFLAGS@ -fpic -fexceptions -MMD #-funsigned-char 
+CFLAGS=@CFLAGS@ -fpic #-funsigned-char
+
+LDFLAGSD='-Wl,-t,-rpath=$$ORIGIN' @LDFLAGS@ -v @NODEFAULTLIBS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L @WXLIBDIR@ -L /usr/lib
+LIBLIBS=-l$(krnllib) -Wl,-Bstatic,-l$(ziplib),-Bdynamic @WXLIBS2@ @LIBSTDLIBS@
+
+LDFLAGS='-Wl,-rpath=$$ORIGIN' '-Wl,-rpath=$$ORIGIN/../lib/@pkgsubdir@' \
+ @LDFLAGS@ -Wl,--no-undefined,-t -v @NODEFAULTLIBS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L @WXLIBDIR@ -L /usr/lib
+LDLIBS=-l$(dvlplib) -l$(krnllib) `relaytool --relay odbc -lodbc` -Wl,-Bdynamic @WXLIBS2@ @BINSTDLIBS@
+# Specifying `relaytool --relay odbc -lodbc` in the above line is necessary only when using a newer
+#  version of relaytool, e.g. 1.11. Older versions, like 1.4, do not need this because they do not
+#  generate the .hidden specification for functions.
+
+all: $(OUTPUTPATH)/bin/$(binname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so
+
+$(OUTPUTPATH)/bin/$(binname): $(binname) 
+	install -d $(OUTPUTPATH)/bin
+	cp $(binname) $(OUTPUTPATH)/bin
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname): $(fulllibname)
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(fulllibname) $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR): $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(fulllibname) $(libname).so.$(MAJOR); 
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(libname).so.$(MAJOR) $(libname).so; 
+
+mpsql.cpp: xrc/ConnSpeedDlg.cpp xrc/SynChkDlg.cpp xrc/LoginDlg.cpp \
+           xrc/LoginDlg.cpp xrc/SQLConsoleDlg.cpp xrc/NetAccDlg.cpp xrc/SubjectRelationshipDlg.cpp \
+           ../../src/gcli/xrc/ConnSpeedDlg.h ../../src/gcli/xrc/SynChkDlg.h ../../src/gcli/xrc/LoginDlg.h \
+           ../../src/gcli/xrc/LoginDlg.h ../../src/gcli/xrc/SQLConsoleDlg.h ../../src/gcli/xrc/NetAccDlg.h ../../src/gcli/xrc/SubjectRelationshipDlg.h
+
+tabledsgn.cpp: xrc/ColumnBasicsDlg.cpp xrc/ColumnHintsDlg.cpp xrc/MoveColValueDlg.cpp \
+               xrc/ShowTextDlg.cpp xrc/TablePropertiesDlg.cpp xrc/IndexListDlg.cpp \
+	       xrc/CheckListDlg.cpp xrc/RefListDlg.cpp xrc/DomainDesignerDlg.cpp \
+	       xrc/SequenceDesignerDlg.cpp \
+	       ../../src/gcli/xrc/ColumnBasicsDlg.h ../../src/gcli/xrc/ColumnHintsDlg.h ../../src/gcli/xrc/MoveColValueDlg.h \
+           ../../src/gcli/xrc/ShowTextDlg.h ../../src/gcli/xrc/TablePropertiesDlg.h ../../src/gcli/xrc/IndexListDlg.h \
+	       ../../src/gcli/xrc/CheckListDlg.h ../../src/gcli/xrc/RefListDlg.h ../../src/gcli/xrc/DomainDesignerDlg.h \
+	       ../../src/gcli/xrc/SequenceDesignerDlg.h
+fsed9.cpp: xrc/CallRoutineDlg.cpp ../../src/gcli/xrc/CallRoutineDlg.h
+
+SOURCES=cpactions.cpp support.cpp controlpanel.cpp cplist.cpp cptree.cpp tabledsgn.cpp \
+ fsed9.cpp debugger.cpp datagrid.cpp \
+ impexpui.cpp delcateg.cpp\
+ xmldsgn.cpp querydsgn.cpp DuplFil.cpp \
+ transdsgn.cpp diagram.cpp tablepanel.cpp  tablepanel.cpp ftdsgn.cpp\
+ wviewdef9.cpp dataproc9.cpp wprez29.cpp management.cpp\
+ mpsql.cpp tlview.cpp framedchild.cpp 
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+$(binname): 602gcli9.o $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so
+	$(CXX) $(LDFLAGS) -o $@ 602gcli9.o $(LDLIBS)
+$(fulllibname): $(OBJECTS) 
+	$(CXX) -Wl,-soname=$(libname).so.$(MAJOR) -shared $(LDFLAGSD) -o $@ $^ $(LIBLIBS)
+
+#### Other targets #################################################################
+clean:
+	rm -f *.o $(fulllibname) $(OUTPUTPATH)/bin/$(binname) $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so
+install: all
+	install -d $(prefix)bin
+	cp $(OUTPUTPATH)/bin/$(binname) $(prefix)bin
+	install -d $(prefix)lib/@pkgsubdir@
+	cp $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so $(prefix)lib/@pkgsubdir@
+
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES:.cpp=.d)

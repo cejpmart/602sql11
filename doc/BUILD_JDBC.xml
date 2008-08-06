@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the JDBC Driver</Header>
+
+  <Section-2><Header>JDBC driver source files</Header>
+    <p><table>
+        <tr>
+          <td><strong>file name</strong></td>
+          <td><strong>file description</strong></td>
+        </tr>
+        <tr><td><file>BUILD_JDBC.xml</file></td><td>this file</td></tr>
+        <tr><td><file>jdbc.html</file></td><td>build instructions in Czech language</td></tr>
+        <tr><td><file>driver/*.java</file></td><td>JDBC driver source files</td></tr>
+        <tr><td><file>build.xml</file></td><td>Ant buildfile</td></tr>
+    </table></p>
+  </Section-2>
+
+  <Section-2><Header>Prequisities</Header>
+    <p><strong>Java SDK version 1.3 or higher</strong><br/>
+      You need a Java compiler to build JDBC driver.
+    </p>
+    <p><strong>Apache Ant</strong><br/>
+      Ant is a Java-based build tool that is used to build JDBC driver. <file>build.xml</file> contains build instruction for Ant to build JDBC driver.
+    </p>
+  </Section-2>
+
+  <Section-2><Header>Building the JDBC driver</Header>
+
+    <ol>
+      <li>Unpack JDBC driver source files and <file>build.xml</file> to an empty folder (let's it is <file>c:\602sql-jdbc</file>).</li>
+
+    <li>Run command-line prompt (console) that is enabled to use Java compiler from Java SDK and to run Ant.</li>
+
+    <li><p>Compile JDBC driver with commands
+      <code>
+C:
+cd \602sql-jdbc
+ant
+      </code>
+      JDBC driver will be compiled into <file>C:\602sql-jdbc\602sql11-jdbc.jar</file> file.</p>
+    </li>
+    </ol>
+  </Section-2>
+
+</Section-1>

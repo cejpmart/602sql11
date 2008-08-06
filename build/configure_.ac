@@ -1,0 +1,344 @@
+# Process this file by autoconf to produce the configure script
+# Autoconf requirements:
+AC_INIT([OPEN602SQL], 1.0, sql@software602.cz, open602sql)
+AC_PREREQ(2.52g)
+AC_CONFIG_SRCDIR([../src/common/cnetapi.cpp])
+
+################# User-configurable variables section ################################
+# Prefix used in names of all produces binaries etc.
+AC_ARG_VAR(NamePrefix,AC_HELP_STRING([],[Prefix used in names of all produced binaries etc. Default=602]))
+if test "$NamePrefix"; then 
+	PREF=$NamePrefix
+else
+	PREF=602     
+fi
+AC_SUBST(PREF)
+
+# Suffix used in names of all produced binaries etc.
+AC_ARG_VAR(NameSuffix,AC_HELP_STRING([],[Suffix used in names of all produced binaries etc. Default=<empty>]))
+if test "$NameSuffix"; then 
+	EXT=$NameSuffix
+fi
+AC_SUBST(EXT)
+
+# Version number used as extension in library names:
+AC_ARG_VAR(MAJOR_VERSION,AC_HELP_STRING([],[Major version number used as extension in library names. Default 1]))
+if test "$MAJOR_VERSION" = ""; then 
+	MAJOR_VERSION=1 
+fi
+AC_ARG_VAR(MINOR_VERSION,AC_HELP_STRING([],[Minor version number used as extension in library names. Default 0]))
+if test "$MINOR_VERSION" = ""; then 
+	MINOR_VERSION=0 
+fi
+
+# Name of the private subdirectory in the lib, man and other installation directories:
+AC_ARG_VAR(pkgsubdir,AC_HELP_STRING([],[Name of the private subdirectory in the lib, man and other installation directories. Default ${PREF}sql${EXT}]))
+if test "$pkgsubdir" = ""; then 
+	pkgsubdir=${PREF}sql$EXT
+fi
+
+# Languages the product is localized for
+AC_ARG_VAR(LANGS,AC_HELP_STRING([],[List of languages the international version is supported for. Default "cs sk"])) 
+if test "$LANGS" = ""; then 
+	LANGS="cs sk"
+fi
+
+################# processing of --enable-debug #############################
+CONFNAME=release
+CFLAGS="-O2"
+CXXFLAGS="-O2"
+CPPFLAGS="-DNDEBUG"
+XLOCALEDEF=""
+RPMDISTR=/wbase/linux/rpm
+RPMLOC=/usr/src/redhat/RPMS/i386 
+RPMDISTR=/mnt/wbase/linux/rpm
+RPMLOC=/usr/src/packages/RPMS/i586
+
+AC_ARG_ENABLE(debug,
+	[AC_HELP_STRING([--enable-debug],[Without optimization and with debug info. Default no debug info.])],
+	[
+		if test "x$enableval" != "xno" ; then
+            LIBTYPE2="d"
+			CFLAGS="-O0 -g"
+			CXXFLAGS="-O0 -g"
+			CPPFLAGS="-D_DEBUG"
+			CONFNAME=debug
+		fi
+	]
+)
+AC_SUBST(CONFNAME)
+
+AC_ARG_ENABLE(xlocale,
+	[AC_HELP_STRING([--enable-xlocale],[With Xlocale. Default yes])],
+	[
+		if test "x$enableval" != "xno" ; then
+			XLOCALEDEF="#define __UCLIBC_HAS_XLOCALE__"
+		fi
+	],
+	[XLOCALEDEF="#define __UCLIBC_HAS_XLOCALE__"]
+)
+AC_SUBST(XLOCALEDEF)
+################ References to other packages ###############################
+# Location of the Crypto++ package (the last part of the path must be "crypto", sorry!):
+AC_ARG_WITH(cryptopp, AC_HELP_STRING([--with-cryptopp=dir],[Location of the CryptoPP project relative to the project root directory. Default ../crypto]),
+	[if test "$withval" = "yes"; then 
+		CRYPTOPPDIR="../crypto" 
+	else if test "$withval" = "no"; then 
+		AC_MSG_ERROR([Building without the CryptoPP package is not possible.]) 
+	else
+		CRYPTOPPDIR="$withval"
+	fi fi],
+    [CRYPTOPPDIR=../crypto])
+AC_SUBST(CRYPTOPPDIR)
+    
+# Location of the pcre package:
+AC_ARG_WITH(pcre,     AC_HELP_STRING([--with-pcre=dir],[Location of the PCRE project relative to the project root directory. Default ../pcre]),
+	[if test "$withval" = "yes"; then 
+		PCREDIR="../pcre" 
+	else if test "$withval" = "no"; then 
+		AC_MSG_ERROR([Building without the PCRE package is not possible.]) 
+	else
+		PCREDIR="$withval"
+	fi fi],
+    [PCREDIR="../pcre"])
+AC_SUBST(PCREDIR)
+
+# Version of wxWidgets libraries
+if test "$WXVER" = ""; then 
+	WXVER="2.8" 
+fi
+if test "$WXBLD" = ""; then 
+	WXBLD="1.1" 
+fi
+AC_ARG_VAR(WXVER, AC_HELP_STRING([],[version (major.minor) of the WX library used. Default 2.8]))
+AC_ARG_VAR(WXBLD, AC_HELP_STRING([],[subversion of the WX library used. Default 3]))
+# Location of the WX package:
+USE_WX="yes"
+AC_ARG_WITH(wx,       AC_HELP_STRING([--with-wx=dir],[Location of the WX project relative to the project root directory. Default is ../wxGTK-$WXVER.$WXBLD]),
+	[if test "$withval" = "yes"; then 
+		wx_use_installed="yes"
+	elif test "$withval" = "no"; then 
+		USE_WX="no"
+	else
+		WXDIR="$withval"
+	fi],
+    [WXDIR="../wxGTK-$WXVER.$WXBLD"])
+# Location of the WX header and library directories
+if test "$wx_use_installed" = "yes"; then
+	SETUPINCL="/usr/local/lib/wx/include/gtk2-unicode-$CONFNAME-$WXVER"
+	WXLIBINCL="/usr/local/include/wx-"$WXVER
+	WXLIBDIR="/usr/local/lib"
+	WXINCTESTDIR=$WXLIBINCL
+	WXLIBTESTDIR=$WXLIBDIR
+    WXROOT="../../../wxGTK-$WXVER.$WXBLD"
+else
+	SETUPINCL="../../../$WXDIR/$CONFNAME/lib/wx/include/gtk2-unicode-$CONFNAME-$WXVER"
+	WXLIBINCL="../../../$WXDIR/include"
+	WXLIBDIR="../../../$WXDIR/$CONFNAME/lib"
+	WXINCTESTDIR=../../$WXDIR/include
+	WXLIBTESTDIR=../../$WXDIR/$CONFNAME/lib
+    WXROOT=../../$WXDIR
+fi
+WXLIBS="wx_baseu"$LIBTYPE2"-"$WXVER" wx_gtk2u"$LIBTYPE2"_core-"$WXVER" wx_gtk2u"$LIBTYPE2"_adv-"$WXVER" wx_gtk2u"$LIBTYPE2"_html-"$WXVER" wx_gtk2u"$LIBTYPE2"_aui-"$WXVER""
+WXLIBS2="-lwx_baseu"$LIBTYPE2"-"$WXVER" -lwx_gtk2u"$LIBTYPE2"_core-"$WXVER" -lwx_gtk2u"$LIBTYPE2"_adv-"$WXVER" -lwx_gtk2u"$LIBTYPE2"_html-"$WXVER" -lwx_gtk2u"$LIBTYPE2"_aui-"$WXVER""
+AC_SUBST(USE_WX)
+AC_SUBST(WXROOT)
+AC_SUBST(WXLIBS)
+AC_SUBST(WXLIBS2)
+AC_SUBST(SETUPINCL)
+AC_SUBST(WXLIBINCL)
+AC_SUBST(WXLIBDIR)
+AC_SUBST(WXLIBTESTDIR)
+AC_SUBST(WXBLD)
+
+# Location of the unixODBC package (set empty if not installed)
+AC_ARG_WITH(unixodbc, AC_HELP_STRING([--with-unixodbc=dir],[Location of the unixODBC project relative to the project root directory. Default ../unixODBC]),
+	[if test "$withval" = "yes"; then 
+		UNIXODBCDIR="../unixODBC" 
+	elif test "$withval" = "no"; then 
+		UNIXODBCDIR=""
+	else
+		UNIXODBCDIR="$withval"
+	fi],
+    [UNIXODBCDIR="../unixODBC"])
+AC_SUBST(UNIXODBCDIR)
+
+################ Determining which optional parts can be build #################
+#  (SUBDIRS are made by the top-level make while OPTDIRS can be made by invoking make in subdirectories)
+SUBDIRS="zip sec krnl srv odbcw ccli"
+OPTDIRS=""
+AC_CHECK_HEADER([odbcinstext.h],[SUBDIRS=$SUBDIRS" odbccfg"],[
+	AC_CHECK_FILE([../../$UNIXODBCDIR/include/odbcinstext.h],[SUBDIRS=$SUBDIRS" odbccfg"],[OPTDIRS=$OPTDIRS" odbccfg"])
+])
+AC_SUBST(SUBDIRS)
+AC_SUBST(OPTDIRS) 
+
+################ Checking the dependence packages ##############################
+AC_CHECK_FILE([../../$CRYPTOPPDIR/cryptlib.h],[],
+	[AC_MSG_ERROR([CryptoPP header file ../../$CRYPTOPPDIR/cryptlib.h not found. See doc/BUILD_CRYPTOPP.])])
+AC_CHECK_FILE([../../$CRYPTOPPDIR/$CONFNAME/libcryptopp.a],[],
+	[AC_MSG_ERROR([CryptoPP library ../../$CRYPTOPPDIR/$CONFNAME/libcryptopp.a not found. See doc/BUILD_CRYPTOPP.])])
+
+AC_CHECK_HEADER([sql.h],[],[AC_MSG_ERROR([ODBC header file sql.h not found. See doc/BUILD_ODBC.])])
+AC_CHECK_HEADER([sqlext.h],[],[AC_MSG_ERROR([ODBC header file sqlext.h not found. See doc/BUILD_ODBC.])])
+AC_CHECK_HEADER([sqltypes.h],[],[AC_MSG_ERROR([ODBC header file sqltypes.h not found. See doc/BUILD_ODBC.])])
+
+AC_CHECK_FILE([../../$PCREDIR/$CONFNAME/pcre.h],[],
+	[AC_MSG_ERROR([PCRE header file ../../$PCREDIR/$CONFNAME/pcre.h not found. See doc/BUILD_PCRE.])])
+AC_CHECK_FILE([../../$PCREDIR/$CONFNAME/.libs/libpcre.a],[],
+	[AC_MSG_ERROR([PCRE library ../../$PCREDIR/$CONFNAME/.libs/libpcre.a not found. See doc/BUILD_PCRE.])])
+
+if test "$USE_WX" = "yes"; then
+	AC_CHECK_FILE([$WXINCTESTDIR/wx/combo.h],[],
+		[AC_MSG_ERROR([WX header file $WXINCTESTDIR/wx/combo.h not found. See doc/BUILD_WX.])])
+	AC_CHECK_FILE([$WXLIBTESTDIR/libwx_gtk2u${LIBTYPE2}_core-$WXVER.so],[],
+		[AC_MSG_ERROR([WX library $WXLIBTESTDIR/libwx_gtk2u${LIBTYPE2}_core-$WXVER.so not found. See doc/BUILD_WX.])])
+	SUBDIRS=$SUBDIRS" gcli mng"
+else
+	OPTDIRS=$OPTDIRS" gcli mng"
+fi
+
+AC_ARG_WITH(exts, AC_HELP_STRING([--with-exts],[Compile the non-open extensions. Default no.]),
+	[if test "$withval" = "no"; then 
+		SUBDIRS=$SUBDIRS
+	else
+		SUBDIRS=$SUBDIRS" xml"
+		AC_CONFIG_FILES([xml/Makefile Makef])
+	fi],
+    [])
+
+################# Other platform-dependent settings ##############################
+# List of standard GCC libraries gcc libraries (specify with a leading comma):
+AC_ARG_WITH(gcclibs, AC_HELP_STRING([--with-gcclibs=libs],[List of standard GCC libraries used if --without-defaultlibs is specified. Default -lgcc,-lgcc_eh]),
+	[ADDGCCLIB="$withval"],
+    [ADDGCCLIB="-lgcc,-lgcc_eh"])
+    
+AC_ARG_WITH(libstdcpp, AC_HELP_STRING([--with-libstdcpp=type],[Type of the libstdc++ library used if --without-defaultlibs is specified. Specify static, dynamic or mixed. Default static]),
+	[STDCPPTYPE="$withval"],
+    [STDCPPTYPE="static"])
+
+if test "$STDCPPTYPE" = "static"; then
+	LIBSTDLIBS=-Wl,-Bstatic,-lstdc++,-Bdynamic,-lc,-lm,-Bstatic,$ADDGCCLIB
+	BINSTDLIBS=-Wl,-Bstatic,-lstdc++,-Bdynamic,-lc,-lm,-Bstatic,$ADDGCCLIB
+elif test "$STDCPPTYPE" = "dynamic"; then
+	LIBSTDLIBS=-Wl,-Bdynamic,-lstdc++,-lc,-lm,-Bstatic,$ADDGCCLIB
+	BINSTDLIBS=-Wl,-Bdynamic,-lstdc++,-lc,-lm,-Bstatic,$ADDGCCLIB
+elif test "$STDCPPTYPE" = "mixed"; then
+	LIBSTDLIBS=-Wl,-Bdynamic,-lstdc++,-lc,-lm,-Bstatic,$ADDGCCLIB
+	BINSTDLIBS=-Wl,-Bstatic,-lstdc++,-Bdynamic,-lc,-lm,-Bstatic,$ADDGCCLIB
+else    
+	AC_MSG_ERROR([Value --with-libstdcpp is wrong. Must be static, dynamic or mixed.]) 
+fi
+
+AC_ARG_WITH(defaultlibs, AC_HELP_STRING([--without-defaultlibs],[Disables the default libraries. Libraries specified by --with-gcclibs and --with-libstdcpp will be used instead. Default -with-defaultlibs]),
+	[if test "$withval" = "yes"; then 
+		NODEFAULTLIBS=""
+	elif test "$withval" = "no"; then 
+		NODEFAULTLIBS="-nodefaultlibs"
+	else
+		AC_MSG_ERROR([Value of --with-defaultlibs is wrong. Use only --with-defaultlibs or --without-defaultlibs.]) 
+	fi]
+    [])
+
+if test -z "$NODEFAULTLIBS"; then
+	LIBSTDLIBS=""
+	BINSTDLIBS=""
+fi
+
+AC_ARG_VAR(OPEN602,AC_HELP_STRING([],[Always 1]))
+if test "$OPEN602" = ""; then 
+	OPEN602=1 
+fi
+
+AC_SUBST(NODEFAULTLIBS)
+AC_SUBST(LIBSTDLIBS)
+AC_SUBST(BINSTDLIBS)
+
+################# Internal variables ##########################################
+OUTPUTDIR=output
+CONFIGURE_NAME=configure_
+MACROS_FILE=macros.h
+AC_SUBST(OUTPUTDIR)
+AC_SUBST(CONFIGURE_NAME)
+AC_SUBST(MACROS_FILE)
+
+# Information on the package
+AC_CANONICAL_HOST
+AC_PREFIX_DEFAULT(/opt/$pkgsubdir)
+
+# Checks for programs
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_LN_S
+AC_PROG_RANLIB
+dnl AC_PROG_LIBTOOL
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_PROG_GCC_TRADITIONAL
+AC_CHECK_PROG(HAVE_RELAYTOOL, "relaytool", "yes")
+if test "$HAVE_RELAYTOOL" != "yes"; then
+	AC_MSG_ERROR([relaytool is not available. Install it first, please.]) 
+fi
+
+# Checks for libraries
+
+# Checks for header files
+
+AC_HEADER_STDC
+AC_HEADER_DIRENT
+AC_CHECK_HEADERS([errno.h fcntl.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h])
+
+# Search for GTK headers:
+AC_CHECK_FILE([/opt/gnome/include/gtk-2.0/gtk/gtk.h],[GTKINCDIR="/opt/gnome"])
+AC_CHECK_FILE([/usr/include/gtk-2.0/gtk/gtk.h],[GTKINCDIR="/usr"])
+AC_CHECK_FILE([/include/gtk-2.0/gtk/gtk.h],[GTKINCDIR=""])
+AC_SUBST(GTKINCDIR)
+
+# Check for types, structures, and compiler characteristics
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+AC_CHECK_TYPES([ptrdiff_t])
+
+# Check for library functions
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_STRFTIME
+AC_CHECK_FUNCS([ftruncate getcwd gethostbyname gethostname gettimeofday memmove memset mkdir select socket strcasecmp strchr strncasecmp strrchr strstr strtol strtoul])
+
+AC_SUBST(RPMDISTR)
+AC_SUBST(RPMLOC)
+
+#AC_LANG(C++)
+#AC_LANG_CONFTEST([AC_LANG_PROGRAM([[#include <clocale>]],[[ __newlocale(0,"",0);]])])
+#gcc -E -dD -o - conftest.cc
+
+AC_CONFIG_FILES([Makefile conf.h zip/Makefile sec/Makefile krnl/Makefile srv/Makefile gcli/Makefile mng/Makefile odbcw/Makefile odbccfg/Makefile ccli/Makefile])
+AC_OUTPUT
+
+# Reporting the configuration:
+echo " "
+echo "Configured for building the Open 602SQL project named: ${PREF}sql${EXT}"
+echo "Configuration: ${CONFNAME}, library version: ${MAJOR_VERSION}.${MINOR_VERSION}"
+echo " Using wxWidgets libraries ${WXVER}.so.0.${WXBLD} from $WXLIBDIR"
+echo " Using PCRE resources from ../../$PCREDIR"
+echo " Using CryptoPP resources from ../../$CRYPTOPPDIR"
+if test $UNIXODBCDIR; then
+echo " Using unixODBC headers from ../../$UNIXODBCDIR if available"
+fi
+echo " Building subprojects in directories: ${SUBDIRS}"
+echo " Not building subprojects in directories: ${OPTDIRS}"
+if test -z "$NODEFAULTLIBS"; then
+	echo " Linking with default libraries"
+else    
+	echo " Type of linking with libstdc++: $STDCPPTYPE"
+    echo " Linking executables with the following standard libraries: ${BINSTDLIBS}"
+    echo " Linking libraries   with the following standard libraries: ${LIBSTDLIBS}"
+fi    
+echo " Installing locales for: ${LANGS}"
+echo " "

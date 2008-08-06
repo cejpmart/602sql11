@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+ <Section-1><Header>Changes to 602SQL Open Server</Header>
+
+
+<Section-2><Header>Changes in the most recent release</Header>
+
+<Section-3><Header>GUI Client</Header>
+<p>2008/04/24: Improved reporting data conversion errors in data grids.</p>
+</Section-3>
+
+<Section-3><Header>SQL server</Header>
+<p>2008/04/24: Added support for creating database backups over a temporary network connection using an UNC path.</p>
+</Section-3>
+
+</Section-2>
+
+
+
+<Section-2><Header>Changes in the 8008-04-18</Header>
+
+<Section-3><Header>GUI</Header>
+<p>2008/04/17: Command for creating a new trigger added into the context menu of tables.</p>
+</Section-3>
+
+
+<Section-3><Header>ODBC client</Header>
+
+<p>2008/04/16: Improved the ODBC access into MySQL and PostgreSQL databases.</p>
+
+</Section-3>
+
+
+<Section-3><Header>SQL server</Header>
+
+<p>2008/04/14: New SQL construct: "SELECT &lt;expression&gt;" converts an expresion into a result set.</p>
+
+<p>2008/04/14: Implemented the aggregation of identical messages in server logs.</p>
+
+<p>2008/04/14: The Backup_database_file can be called from SQL procedures as well as from client API.</p>
+
+<p>2008/04/15: ERROR: The NOT NULL clause defined on a table column could have been evaluated too early.</p>
+
+</Section-3>
+
+</Section-2>
+
+
+
+
+<Section-2><Header>Changes in the 2008-03-31 release</Header>
+
+<Section-3><Header>Client</Header>
+
+2008/03/26: A new command-line oriented client created.
+
+</Section-3>
+
+</Section-2>
+
+
+<Section-2><Header>Changes in the 2008-02-29 release</Header>
+
+<Section-3><Header>ODBC</Header>
+
+2008/02/20: ODBC driver updated for the x64 platform.
+
+</Section-3>
+
+</Section-2>
+
+
+
+<Section-2><Header>Changes in the 2008-01-31 release</Header>
+
+<Section-3><Header>GUI</Header>
+
+<p>2007/12/21: Added the "copy" button to the the list of columns in tables and queries.</p>
+
+<p>2007/12/18: Added the possibility of off-line registration of extensions.</p>
+
+</Section-3>
+
+
+<Section-3><Header>Client API</Header>
+
+<p>2007/12/21: Added the possibility of parsing documents by the client (using any fulltext convertor) and indexing them by the server.</p>
+
+</Section-3>
+
+
+<Section-3><Header>SQL server</Header>
+
+<p>2007/12/12: Added support for tables with fixed part bigger than 4GB.</p>
+
+<p>2007/12/14: Improved the optimization od SQL queries: conditions evaluated on records are ordered by their increasing complexity.</p>
+
+<p>2007/12/17: Improved the optimization od SQL queries: multipart indexes may be used by WHERE and ORDER BY simultaneously.</p>
+
+<p>2008/1/15: Error corrected: string longer than 130 bytes used in index may have caused incorrent answers to queries.</p>
+
+<p>2008/1/17: Corrected the response to the "Key duplicity" error inside the ALTER TABLE statement.</p>
+
+<p>2008/1/21: Added the MaxClientCursors property.</p>
+
+<p>2008/1/21: Added the MaxRoutineStack property.</p>
+
+<p>2008/1/21: Extended the context of the NO_RIGHT error when reading the database value in an SQL statement.</p>
+
+</Section-3>
+</Section-2>
+
+
+
+<Section-2><Header>Changes in the 2007-12-11 release</Header>
+
+<Section-3><Header>Documentation</Header>
+
+<p>2007/12/11: Added the help file in english.</p>
+
+</Section-3>
+
+<Section-3><Header>GUI</Header>
+
+<p>2007/12/11: Added a new panel containing the list of columns in tables and queries.</p>
+
+</Section-3>
+
+</Section-2>
+
+
+
+<Section-2><Header>Changes in the 2007-11-23 release</Header>
+
+<Section-3><Header>GUI</Header>
+
+<p>The binary distribution for Linux is based on wxWidgets version 2.8.6. The version 2.8.4 crashed with Ubuntu 7.10 (and others).</p>
+
+<p>2007/11/22: Removed the interference between the measuring of connection speed and tracing SQL statemetns.</p>
+
+</Section-3>
+
+<Section-3><Header>SQL server</Header>
+
+<p>A new server extension for planning the backgroud operations on the SQL server has been added.</p>
+
+<p>ERROR: The SQL condition in the form A .= B may have been incorrectly evaluated when A was a column of 8-bit character string type, B was an expression of Unicode character string type and an index on column A existed.</p>
+
+<p>2007/11/13: Improved the strategy for locking multiple indexes during commit.</p>
+
+<p>2007/11/14: The _iv_memory_usage system query added.</p>
+
+<p>2007/11/14: Changed the method of stopping the SQL server from its console window: the Close button has been disabled the keyboard input of statements added.</p>
+
+<p>2007/11/15: ERROR: Unicode literal in the SQL statement caused a small amount of memory on the SQL server to be lost.</p>
+
+</Section-3>
+
+</Section-2>
+
+</Section-1>

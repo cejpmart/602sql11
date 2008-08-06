@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the PCRE library</Header>
+<p><ident>PCRE</ident> is a <em>Perl-compatible regular expression library</em>. The latest release of PCRE is always available from <a href="http://www.pcre.org"><ident>http://www.pcre.org</ident></a> or <ident>ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-xxx.tar.gz</ident>. Versions 7.1 and 7.2 have been tested in this project.</p>
+
+<p>Download the PCRE source distribution and unpack it. The default configuration assumes that the root directory of the PCRE project is named "pcre" and is located next to the <file>$(SQL_ROOT)</file> directory. The relative path to the PCRE root is assumed "<file>../pcre</file>".</p> 
+
+<p>If the PCRE root directory is located and/or named differently, the configuration must be changed. On Windows, update the variable PCREDIR on the User Macros page in the the "common" property sheet. On Unix, specify the location among configure parameters (see <a href="BUILD_CONFIGURE.xml">Building the project on Unix</a>).</p>
+
+
+<Section-2><Header>Building on the Windows platform</Header>
+
+<p>The standard static pcre library can be used. Build it in this way:</p>
+<ol>
+<li>In the PCRE root directory, copy <file>config.h.generic</file> into <file>config.h</file> and <file>pcre.h.generic</file> into <file>pcre.h</file></li>
+
+<li>Define environment variables necessary for using the VC command-line tools: run <file>vcvarsall.bat</file> located in <file>Program Files\Microsoft Visual Studio 8\VC</file>.</li>
+
+<li>In the PCRE root directory execute:
+<code>cl -DSUPPORT_UTF8 -DSUPPORT_UCP dftables.c
+dftables.exe pcre_chartables.c</code></li>
+<p>The <file>step1.bat</file> script from the <file>tools/msw</file> directory can be used for this task.</p>
+
+<li>In the PCRE root directory execute:</li>
+<code>mkdir debug
+cl -DSUPPORT_UTF8 -DSUPPORT_UCP -DPOSIX_MALLOC_THRESHOLD=10 -DPCRE_STATIC -I. /MTd /Zi /Od /Fo"debug/" /Fd"debug/" /c pcre_chartables.c pcre_compile.c pcre_config.c pcre_dfa_exec.c pcre_exec.c pcre_fullinfo.c pcre_get.c pcre_globals.c pcre_info.c pcre_maketables.c pcre_newline.c pcre_ord2utf8.c pcre_refcount.c pcre_study.c pcre_tables.c pcre_try_flipped.c pcre_ucp_searchfuncs.c pcre_valid_utf8.c pcre_version.c pcre_xclass.c
+cd debug
+lib /OUT:pcre.lib pcre_chartables.obj pcre_compile.obj pcre_config.obj pcre_dfa_exec.obj pcre_exec.obj pcre_fullinfo.obj pcre_get.obj pcre_globals.obj pcre_info.obj pcre_maketables.obj pcre_newline.obj pcre_ord2utf8.obj pcre_refcount.obj pcre_study.obj pcre_tables.obj pcre_try_flipped.obj pcre_ucp_searchfuncs.obj pcre_valid_utf8.obj pcre_version.obj pcre_xclass.obj
+cd ..
+mkdir release
+cl -DSUPPORT_UTF8 -DSUPPORT_UCP -DPOSIX_MALLOC_THRESHOLD=10 -DPCRE_STATIC -I. /MT /O2 /Fo"release/" /Fd"release/"  /c pcre_chartables.c pcre_compile.c pcre_config.c pcre_dfa_exec.c pcre_exec.c pcre_fullinfo.c pcre_get.c pcre_globals.c pcre_info.c pcre_maketables.c pcre_newline.c pcre_ord2utf8.c pcre_refcount.c pcre_study.c pcre_tables.c pcre_try_flipped.c pcre_ucp_searchfuncs.c pcre_valid_utf8.c pcre_version.c pcre_xclass.c
+cd release
+lib /OUT:pcre.lib pcre_chartables.obj pcre_compile.obj pcre_config.obj pcre_dfa_exec.obj pcre_exec.obj pcre_fullinfo.obj pcre_get.obj pcre_globals.obj pcre_info.obj pcre_maketables.obj pcre_newline.obj pcre_ord2utf8.obj pcre_refcount.obj pcre_study.obj pcre_tables.obj pcre_try_flipped.obj pcre_ucp_searchfuncs.obj pcre_valid_utf8.obj pcre_version.obj pcre_xclass.obj
+cd ..</code>
+<p>The <file>step2.bat</file> script from the <file>tools/msw</file> directory can be used for this task.</p>
+</ol>
+
+<p>This produces static <file>pcre.lib</file> libraries in the <file>debug</file> and <file>release</file> subdirectories.</p>
+</Section-2>
+
+<Section-2><Header>Building on Unix platforms</Header>
+
+<p>For Unix some changes in the project are necessary in order to make the library binary compatible with many platforms.</p>
+<ol>
+<li>Replace the <file>pcre_maketables.c</file> file with the file from the <file>tools/unix</file> directory. The file has been prepared for pcre-7.1 but it remains generally unchanged in many recent versions of pcre.</li>
+<li>Copy <ident>apsymbols.h</ident> from <ident>include/common/unix</ident> to the PCRE root directory.</li>
+<li>Create the debug subdirectory of the PCRE root directory.</li>
+<li>In the <file>debug</file> directory do:
+<code>../configure CFLAGS=-g CXXFLAGS=-g --enable-utf8 --enable-unicode-properties
+make</code></li>
+<li>Create the <file>release</file> subdirectory of the PCRE root directory.</li>
+<li>In the <file>release</file> directory do:
+<code>../configure CFLAGS=-O2 CXXFLAGS=-O2 --enable-utf8 --enable-unicode-properties
+make</code></li>
+</ol>
+<p>This produces <file>(debug|release)/pcre.h</file> and <file>(debug|release)/.libs/libpcre.a</file> files which will be used when making the SQL server. It is not necessary to do "make install".</p>
+</Section-2>
+</Section-1>

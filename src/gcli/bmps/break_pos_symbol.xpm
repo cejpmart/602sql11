@@ -1,0 +1,20 @@
+/* XPM */
+static char *break_pos_symbol_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"10 10 4 1",
+". c #E00080",
+"o c #FFFF00",
+"X c #00FFFF",
+"  c None",
+/* pixels */
+"   ....   ",
+"X ......  ",
+"XXXXoo... ",
+"XXXXXXX...",
+"XXXXXXXXXX",
+"XXXXXXXXXX",
+"XXXXXXX...",
+"XXXXoo... ",
+"X ......  ",
+"   ....   "
+};

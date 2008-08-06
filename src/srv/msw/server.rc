@@ -1,0 +1,15 @@
+#include "version.rc"  // includes wbvers.h
+
+#if WBVERS>=900 
+SERVER_ICON ICON "SQL602server.ico"  
+#else  // 8.0, 8.1
+SERVER_ICON ICON "server.ico" 
+#endif
+
+#if WBVERS<1100
+#include "rcdefs.h"
+#include "srvctrl.rc"  // depends on version defined in wbvers.h included from version.rc
+#endif
+
+VERSION_INFO_EXE("- SQL Server",NAME_PREFIX "sql" NAME_SUFFIX)
+

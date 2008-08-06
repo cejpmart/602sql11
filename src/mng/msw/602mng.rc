@@ -1,0 +1,8 @@
+#include "version.rc"
+
+A ICON "SQL602mng.ico"  // must be identified by a string, not a number, to be the 1st icon in the file!
+
+VERSION_INFO_EXE("Server Manager",NAME_PREFIX "mng" NAME_SUFFIX)
+
+#include "wx/msw/wx.rc"
+

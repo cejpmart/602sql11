@@ -1,0 +1,26 @@
+
+char *_cut_xpm[] = { 
+/* columns rows colors chars-per-pixel */ 
+"16 16 4 1", 
+". c #000000", 
+"o c #FF0000", 
+"  c None", 
+"X c #808080", 
+/* pixels */ 
+"                ", 
+"                ", 
+" .          .   ", 
+" ..        ..   ", 
+" ...      ...   ", 
+"  ...    ...X   ", 
+"   ...  ...X    ", 
+"    ..oo..X     ", 
+"     .oo.X      ", 
+"    ..XX..      ", 
+"  ...X   ...    ", 
+" .XXX.  .XXX.   ", 
+" .X  .X .X  .X  ", 
+" .X  .X .X  .X  ", 
+"  ...XX  ...XX  ", 
+"   XXX    XXX   " 
+}; 

@@ -1,0 +1,194 @@
+/* odbcdrv.rc - ODBC driver resource file */
+#include "rcdefs.h"
+#include "wbvers.h"
+#include "wbodbcrc.h"
+#include "utx.h"
+
+#if WBVERS>=900 // 9.0, 9.5
+5 ICON "SQL602server.ico"
+#else  // 8.0, 8.1
+5 ICON "../srv/server.ico"
+#endif
+
+#ifdef ENGLISH
+
+#define OD0   "Data source:"
+#define OD1   "Server name:"
+#define OD2   "&Application:"
+#define OD3   "&User name:"
+#define OD4   "&Password:"
+#define OD5   "602SQL Connection via ODBC 3.00"
+#define OD6   "Select an Application in 602SQL"
+#define OD7   "&Application name:"
+#define OD8   "602SQL Data Access Parameters"
+#define OD9   "Please, enter the ODBC data source parameters and press OK."
+#define OD10  "ODBC &data source name:"
+#define OD11  "&Server name:"
+#define OD12  "&Application name:"
+#define OD13  "Com&ment:"
+#define OD14  "&Browse..."
+#define OD15  "ODBC data source settings do not specify the application name. Select the application to work with."
+#define ODS15  "ODBC driver version:"
+#define OD20  "Select Server 602SQL"
+#define OD21  "Data source does not specify the server name! Select the server, please:"
+
+#else
+
+#define OD0   "Zdroj dat:"
+#define OD1   "Jméno serveru:"
+#define OD2   "Aplikace:"
+#define OD3   "Jméno &u\236ivatele:"
+#define OD4   "&Heslo:"
+#define OD5   "Pøipojení na 602SQL pøes ODBC 3.00"
+#define OD6   "Volba aplikace ve 602SQL"
+#define OD7   "Jméno &aplikace:"
+#define OD8   "Nastavení pøístupu k datùm ve 602SQL"
+#define OD9   "Vyplòte parametry ODBC zdroje dat a pak stisknìte OK."
+#define OD10  "Jméno ODBC zdroje &dat:"
+#define OD11  "Jméno &serveru:"
+#define OD12  "Jméno &aplikace:"
+#define OD13  "&Komentáø:"
+#define OD14  "&Volba..."
+#define OD15  "Nastavení ODBC zdroje dat neobsahuje jméno aplikace. Vyberte aplikaci, s níž bude zdroj dat pracovat."
+#define ODS15  "Verze ODBC driveru:"
+#define OD20  "Volba serveru 602SQL"
+#define OD21  "Zdroj dat neobsahuje jméno serveru! Vyberte server:"
+#endif
+
+
+EDRIVERCONNECT DIALOG 95, 87, 221, 130
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION OD5
+FONT 8, "MS Sans Serif"
+{
+ LTEXT OD0, -1, 4, 10, 64, 8, WS_CHILD | WS_VISIBLE | WS_GROUP
+ EDITTEXT DD_DSN, 72, 4, 140, 14, ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP | WS_BORDER
+ LTEXT OD1, -1, 4, 28, 64, 8, WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", DD_SERVERACC, "EDIT", ES_READONLY | ES_LEFT | ES_AUTOHSCROLL | WS_CHILD | WS_VISIBLE | WS_BORDER, 72, 22, 140, 14
+ CONTROL OD2, -1, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 46, 64, 9
+ CONTROL "", DD_SCHEMANAME, "edit", ES_LEFT | ES_AUTOHSCROLL | ES_READONLY | WS_CHILD | WS_VISIBLE | WS_BORDER, 72, 40, 140, 14
+ LTEXT OD3, -1, 44, 71, 64, 8, WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", DD_USERNAME, "combobox", CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP, 108, 69, 96, 86
+ LTEXT OD4, -1, 44, 85, 54, 8, WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", DD_PASSWORD, "EDIT", ES_LEFT | ES_PASSWORD | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP, 108, 82, 96, 12
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 56, 103, 52, 14
+ PUSHBUTTON UTX_CANCEL, IDCANCEL, 140, 103, 52, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ CONTROL "", -1, "static", SS_BLACKFRAME | WS_CHILD | WS_VISIBLE, 36, 65, 176, 60
+ ICON 5, -1, 8, 71, 21, 20, WS_CHILD | WS_VISIBLE
+}
+
+DLG_SELAPPL DIALOG 95, 49, 196, 79
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION OD6
+FONT 8, "MS Sans Serif"
+BEGIN
+ LTEXT OD7, -1, 4, 28, 64, 8, WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", DD_SCHEMANAME, "COMBOBOX", CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP, 4, 39, 144, 86
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 31, 60, 44, 14
+ PUSHBUTTON UTX_CANCEL, IDCANCEL, 120, 60, 44, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ CONTROL 5, -1, "STATIC", SS_ICON | WS_CHILD | WS_VISIBLE | WS_GROUP, 160, 32, 21, 20
+ CONTROL OD15, -1, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 4, 4, 188, 22
+END
+
+DLG_SELECT_SERVER DIALOG 0, 0, 194, 170
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION OD20
+FONT 8, "MS Sans Serif"
+{
+ CONTROL OD21, -1, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 8, 4, 128, 22
+ CONTROL "", 100, "listbox", LBS_NOTIFY | LBS_HASSTRINGS | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP, 8, 26, 124, 142
+ CONTROL UTX_OK, IDOK, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 140, 26, 50, 14
+ CONTROL UTX_CANCEL, IDCANCEL, "BUTTON", BS_PUSHBUTTON | BS_CENTER | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 140, 47, 50, 14
+}
+/////////////////////////////////// SETUP //////////////////////////////////////
+#if WBVERS<810
+CONFIGDSN DIALOGEX 65, 22, 233, 185
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION OD8
+FONT 8, "MS Sans Serif"
+{
+ CTEXT OD9, -1, 4, 6, 224, 16, WS_CHILD | WS_VISIBLE | WS_GROUP
+ RTEXT OD10, -1, 20, 28, 88, 8, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", IDC_DSNAME, "EDIT", ES_LEFT | ES_AUTOHSCROLL | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP, 112, 24, 116, 12
+ RTEXT OD11, -1, 44, 48, 64, 10, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", IDC_OPTION1, "combobox", CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP, 112, 43, 116, 103
+ RTEXT OD12, -1, 48, 68, 60, 8, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ EDITTEXT IDC_OPTION2, 112, 64, 116, 12, ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP
+ CONTROL OD13, -1, "STATIC", SS_RIGHT | WS_CHILD | WS_VISIBLE, 48, 88, 60, 8
+ EDITTEXT IDC_DESC, 112, 84, 116, 12, ES_AUTOHSCROLL
+ CONTROL "Translator", -1, "BUTTON", BS_GROUPBOX | WS_CHILD | WS_VISIBLE, 6, 125, 220, 36
+ LTEXT "", IDC_TRANS_NAME, 14, 138, 142, 12
+ PUSHBUTTON OD14, IDC_SELECT, 176, 138, 40, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ DEFPUSHBUTTON UTX_OK, IDOK, 54, 167, 42, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ PUSHBUTTON UTX_CANCEL, IDCANCEL, 134, 167, 44, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ ICON 5, -1, 12, 56, 18, 20, WS_CHILD | WS_VISIBLE
+ CONTROL ODS15, -1, "static", SS_RIGHT | WS_CHILD | WS_VISIBLE, 24, 108, 84, 9
+ CONTROL "", IDC_DRIVER_VERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 112, 105, 116, 12, WS_EX_CLIENTEDGE
+}
+#else
+CONFIGDSN DIALOGEX 65, 22, 233, 144
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION OD8
+FONT 8, "MS Sans Serif"
+{
+ CTEXT OD9, -1, 4, 6, 224, 16, WS_CHILD | WS_VISIBLE | WS_GROUP
+ RTEXT OD10, -1, 20, 28, 88, 8, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", IDC_DSNAME, "EDIT", ES_LEFT | ES_AUTOHSCROLL | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP, 112, 24, 116, 12
+ RTEXT OD11, -1, 44, 48, 64, 10, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ CONTROL "", IDC_OPTION1, "combobox", CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP, 112, 43, 116, 103
+ RTEXT OD12, -1, 48, 68, 60, 8, SS_RIGHT | WS_CHILD | WS_VISIBLE | WS_GROUP
+ EDITTEXT IDC_OPTION2, 112, 64, 116, 12, ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP
+ CONTROL OD13, -1, "STATIC", SS_RIGHT | WS_CHILD | WS_VISIBLE, 48, 88, 60, 8
+ EDITTEXT IDC_DESC, 112, 84, 116, 12, ES_AUTOHSCROLL
+ ICON 5, -1, 12, 56, 18, 20, WS_CHILD | WS_VISIBLE
+ CONTROL ODS15, -1, "static", SS_RIGHT | WS_CHILD | WS_VISIBLE, 24, 108, 84, 9
+ CONTROL "", IDC_DRIVER_VERS, "static", SS_LEFT | WS_CHILD | WS_VISIBLE, 112, 105, 116, 12, WS_EX_CLIENTEDGE
+ DEFPUSHBUTTON UTX_OK, IDOK, 32, 126, 44, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ PUSHBUTTON "Test", IDTEST, 94, 126, 44, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+ PUSHBUTTON UTX_CANCEL, IDCANCEL, 156, 126, 44, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
+}
+#endif
+
+#if WBVERS<900
+/************************** copy from WBKERNEL.RC *********************************/
+#include "kernelrc.h"
+#ifndef ENGLISH
+STRINGTABLE
+BEGIN
+        SERVER_TERM,  "SQL server skonèil práci.\nUkonèete prosím ihned klienta!"
+        SERVER_EXIT,  "602SQL Server za minutu konèí,\nuložte svou práci, prosím."
+        SERVER_MESSAGE_CAPT, "Zpráva od SQL serveru"
+
+        STBR_DIALING, "Vytáèím èíslo a pøipojuji se do "
+        STBR_DIALING_ERROR, "Chyba "  
+END
+#else
+STRINGTABLE
+BEGIN
+        SERVER_TERM,  "SQL Server terminated.\nClose the client please."
+        SERVER_EXIT,  "602SQL server is in a minute down,\nsave your work, please."
+        SERVER_MESSAGE_CAPT, "Message from the SQL server"
+
+        STBR_DIALING, "Dialing up and connecting to "
+        STBR_DIALING_ERROR, "Error "  
+END
+#endif
+#endif
+
+/////////////////////////////////// a string /////////////////////////////////
+#ifndef ENGLISH
+STRINGTABLE
+BEGIN
+  DRIVER_VERSION_STR "ODBC 03.00 pro"
+END
+#else
+STRINGTABLE
+BEGIN
+  DRIVER_VERSION_STR "ODBC 03.00 for"
+END
+#endif
+/***************************************************************************/
+
+#include "version.rc"
+VERSION_INFO_DLL("ODBC Driver",NAME_PREFIX "odbc" NAME_SUFFIX)
+

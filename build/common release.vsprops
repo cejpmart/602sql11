@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="common release"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		Optimization="2"
+		WholeProgramOptimization="true"
+		PreprocessorDefinitions="NDEBUG"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		LinkTimeCodeGeneration="1"
+	/>
+	<UserMacro
+		Name="WxLibs"
+		Value="wxbase28u.lib wxmsw28u_core.lib wxmsw28u_adv.lib wxmsw28u_aui.lib"
+	/>
+</VisualStudioPropertySheet>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the project on Unix platforms</Header>
+
+<Section-2><Header>Parameters of configure</Header>
+
+<p>A list of parameters with brief descriptions can be obtained from:
+<code>../configure -h</code></p>
+
+<Section-3><Header>NamePrefix=prefix NameSuffix=suffix</Header>
+
+<p>Libraries and executables produced by the build process have fixed names, but a common prefix and suffix can be attached to all of them. This helps when working with multiple versions of the product. By default the prefix is "602" and the suffix is empty.</p>
+</Section-3>
+
+<Section-3><Header>MAJOR_VERSION=num MINOR_VERSION=num</Header>
+
+<p>Dynamic libraries usually have major and minor version number which makes it possible to distinguish compatible and incompatible changes in their API. When the build process produces a dynamic library abc, it creates a binary file lib$(NamePrefix)abc$(NameSuffix).so.$(major_version).$(minor_version) and symbolic links lib$(NamePrefix)abc$(NameSuffix).so.$(major_version) and lib$(NamePrefix)abc$(NameSuffix).so. By default the version numbers are 1 and 0.</p>
+</Section-3>
+
+<Section-3><Header>pkgsubdir</Header>
+
+<p>Name of the private subdirectory created in lib, share and other directories of the installation tree. By default the name of this subdirectory is $(NamePrefix)sql$(NameSuffix), i.e. 602sql.</p>
+</Section-3>
+
+<Section-3><Header>LANGS=locale1 locale2 ... localeX</Header>
+
+<p>List of locales that will be installed by the "make install" command. For every locale in the list there must be locale string files named <em>locale</em>.po and <em>locale</em>.mo in the $(SQL_ROOT)/src/gcli and $(SQL_ROOT)/src/mng directories and localized help files named $(NamePrefix)sql$(NameSuffix)<em>locale</em>.zip and $(NamePrefix)sql$(NameSuffix)<em>locale</em>.chm in the $(SQL_ROOT)/doc/help directory. By default LANGS is "cs sk"</p>
+</Section-3>
+
+<Section-3><Header>--enable-debug</Header>
+
+<p>This parameter instructs the compiler and linker to produce a non-optimized version containing debug information. By default the binaries are optimized and do not contain debug information.</p>
+</Section-3>
+
+<Section-3><Header>--enable-xlocale</Header>
+
+<p>This parameter says that the C++ headers and libraries use the GLIBC 2.3 version of locale-parameterized string manipulation functions, like wcscasecmp_l. The default is yes. Specify --disable-xlocale if the older version of these functions is used, like __wcscasecmp_l.</p> 
+</Section-3>
+
+<Section-3><Header>--with-cryptopp=dir</Header>
+
+<p>This parameter specifies the location of the root directory of the CryptoPP library. The path to the directory is relative to the $(SQL_ROOT) directory. The default value is ../crypto. The last part of the path must be "crypto" - rename the root directory of CryptoPP to crypto.</p>
+</Section-3>
+
+<Section-3><Header>--with-pcre=dir</Header>
+
+<p>This parameter specifies the location of the root directory of the PCRE library. The path to the directory is relative to the $(SQL_ROOT) directory. The default value is ../pcre.</p>
+</Section-3>
+
+<Section-3><Header>WXVER=num.num WXBLD=num.num</Header>
+<!-- asas -->
+<p>These variables specify the version and build numbers of the wxWidgets libraries available on the platform. The default is 2.8 and 1.1 for wxWidgets 2.8.4.</p>
+</Section-3>
+
+<Section-3><Header>--with-wx=dir</Header>
+<p>This parameter specifies the location of the root directory of the wxWidgets library. The path to the directory is relative to the $(SQL_ROOT) directory. The default value is ../wxGTK-$WXVER.$WXBLD. This default cannot be used in many wxWidgets versions, for example version 2.8.4 is located in wxGTK-2.8.4 directory, but WXVER and WXBLD must be 2.8 and 1.1 respectively.    
+--without-wx says that wxWidgets are not available and the parts of project using them should not be built.</p> 
+<!-- -with-wx=yes says that the wxWidgets library has been installed to /usr/local/lib and headers have been copied to /usr/local/include directories (usually using make install). --> 
+</Section-3>
+
+<Section-3><Header>--with-unixodbc=dir</Header>
+
+<p>This parameter specifies the location of the root directory of the unixODBC project. The path to the directory is relative to the $(SQL_ROOT) directory. The default value is ../unixODBC. --without-unixodbc says that the unixODBC project is not available and the ODBC setup library for unixODBC should not be built.</p>
+<p>The ODBC headers and libraries are primarily searched in standard locations. If they are not found, the location specified by the parameter if searched.</p>
+</Section-3>
+
+<Section-3><Header>--without-defaultlibs</Header>
+<p>If this parameter is specified, the binaries are not linked against the default list of libraries specified by the configuration of the compiler suite, but against libraries specified by the --with-gcclibs and --with-libstdcpp parameters. This helps producing more portable binaries for binary distributions.</p>
+</Section-3>
+
+<Section-3><Header>--with-gcclibs=libs</Header>
+
+<p>This parameter specifies the list of standard GCC libraries that should be linked with every binary file in the project. The list has the form -lname1,-lname2,...-lnameX. The default is -lgcc,-lgcc_eh. The parameter is valid only if --without-defaultlibs is specified as well. Some older compilers do not use the gcc_eh library.</p> 
+</Section-3>
+
+<Section-3><Header>--with-libstdcpp=type</Header>
+
+<p>This parameter specifies the type of linking for the stdc++ library. Static linking makes the resulting binaries more portable because the target system may have an incompatible version of the library. Dynamic linking makes binaries smaller. Static linking of stdc++ into other dynamic libraries does not work on some platforms. The option may have the values "static", "dynamic" or "mixed". "mixed" says that executables will be linked with the static version of stdc++ while dynamic libraries will be linked with the dynamic version (which surprisingly has some positive effect on portability). The parameter is valid only if --without-defaultlibs is specified as well. The default is "static".</p>
+</Section-3>
+
+</Section-2>
+
+<Section-2><Header>Example of configuration</Header>
+
+<code>../configure --enable-debug --with-pcre=../pcre-7.1 --with-unixodbc=../unixODBC-2.2.12 WXVER=3.0 WXBLD=0 --without-defaultlibs --with-stdcpp=dynamic</code>
+
+<p>The above statement configures the current directory for building the project with debugging capabilities. All binaries link with the dynamic stdc++ library. The dependency projects all have their root directories next to the <file>$(SQL_ROOT)</file> directory. The names of the root directories are: pcre-7.1, crypto, unixODBC-2.2.12 and wxGTK-3.0.0.</p>
+
+</Section-2>
+</Section-1>

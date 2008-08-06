@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the PHP module</Header>
+
+  <Section-2><Header>PHP module source files</Header>
+    <p><table>
+        <tr>
+          <td><strong>file name</strong></td>
+          <td><strong>file description</strong></td>
+        </tr>
+        <tr><td><file>BUILD_PHP.xml</file></td><td>this file</td></tr>
+        <tr><td><file>readme.html</file></td><td>build instructions in Czech language</td></tr>
+        <tr><td><file>mod602sql.c</file><br/><file>mod602sql.h</file><br/><file>php_602sql.h</file></td><td>PHP module source files</td></tr>
+        <tr><td><file>mod602sql.rc</file></td><td>version information for Windows</td></tr>
+        <tr><td><file>php_602sql.mak</file></td><td>makefile for Windows</td></tr>
+        <tr><td><file>php_602sql.lmk</file></td><td>makefile for Linux</td></tr>
+        <tr><td><file>602sql8/*</file></td><td>files that are used in Linux during PHP module compilation when the compilation is made as part of whole PHP compilation (for 602SQL 8.0)</td></tr>
+        <tr><td><file>602sql9/*</file></td><td>files that are used in Linux during PHP module compilation when the compilation is made as part of whole PHP compilation (for 602SQL 9.0)</td></tr>
+        <tr><td><file>602sql95/*</file></td><td>files that are used in Linux during PHP module compilation when the compilation is made as part of whole PHP compilation (for 602SQL 9.5)</td></tr>
+        <tr><td><file>602sql10/*</file></td><td>files that are used in Linux during PHP module compilation when the compilation is made as part of whole PHP compilation (for 602SQL 10.0)</td></tr>
+        <tr><td><file>602sql11/*</file></td><td>files that are used in Linux during PHP module compilation when the compilation is made as part of whole PHP compilation (for 602SQL 11.0)</td></tr>
+    </table></p>
+  </Section-2>
+
+  <Section-2><Header>Prequisities</Header>
+    <p><strong>602SQL version 8, 8.1, 9.0, 9.5, 10.0 or 11.0</strong><br/>
+      602SQL should be installed to test functionality of compiled PHP module. Existence of <file>lib602krnlNN.so</file> in <file>/usr/lib</file> is needed to successfully compile PHP module on Linux.
+    </p>
+    <p><strong>602SQL SDK for C/C++</strong><br/>
+      It consists of header files (<file>general.h</file>, <file>wbkernel.h</file>) and library files (for Windows - <file>602krnlNN.lib</file> where <ident>NN</ident> is 602SQL version number).
+    </p>
+    <p><strong>PHP version 4 or 5</strong><br/>
+      PHP have to be installed including tools that are needed to compile PHP modules - PHP header files and <file>php4ts.lib</file> or <file>php5ts.lib</file> on Windows.
+    </p>
+    <p><strong>C compiler</strong><br/>
+      <em>Microsoft Visual C++</em> version 6 or newer on Windows, <em>gcc</em> and <em>make</em> on Linux.
+    </p>
+  </Section-2>
+
+  <Section-2><Header>Building on the Windows platform</Header>
+
+    <ol>
+    <li>PHP module source files unpack to an empty folder (let's it is <file>c:\php_602sql</file>).</li>
+
+    <li><p>Open <file>php_602sql.mak</file> file and modify following makefile settings:</p>
+    <p><table>
+        <tr><td><strong>setting name</strong></td><td><strong>description</strong></td></tr>
+        <tr><td><ident>PHPVER</ident></td><td>PHP version number</td></tr>
+        <tr><td><ident>PHPSRCDIR</ident></td><td>folder with PHP source files</td></tr>
+        <tr><td><ident>PHPLIBDIR</ident></td><td>folder with <file>php4ts.lib</file> or <file>php5ts.lib</file> library</td></tr>
+        <tr><td><ident>SQL602INCDIR</ident></td><td>folder with 602SQL header files (<file>general.h</file> and <file>wbkernel.h</file>)</td></tr>
+        <tr><td><ident>SQL602LIBDIR</ident></td><td>folder with 602SQL library file (<file>602krnlNN.lib</file>)</td></tr>
+        <tr><td><ident>SQLVERMAJ</ident></td><td>602SQL version number you are using</td></tr>
+    </table></p></li>
+
+    <li><p>Compile PHP module with commands
+      <code>
+C:
+cd \php_602sql
+nmake -f php_602sql.mak
+      </code>
+      PHP module will be compiled into <file>C:\php_602sql\php_602sqlNN.dll</file> file where <ident>NN</ident> is 602SQL version number.</p>
+    </li>
+    </ol>
+  </Section-2>
+
+  <Section-2><Header>Building on Linux platforms</Header>
+
+    <p>PHP module can be compiled standalone or during compilation of the whole PHP. You always get dynamically-loadable module with standalone compilation while you can get 602SQL PHP module compiled into PHP interpreter using the other way of compilation.</p>
+
+    <p>PHP module compilation during whole PHP compilation is tested with PHP 4.2.x or newer versions.</p>
+    <Section-3><Header>PHP module compilation during whole PHP compilation</Header>
+      <ol>
+        <li><p>Copy following PHP source files into <file>602sql</file> subfolder of the <file>ext</file> folder in the PHP source files tree (let's it is <file>/usr/src/php-4.4.6/ext/602sql</file>): <file>mod602sql.c</file>, <file>mod602sql.h</file>, <file>php_602sql.h</file>. Copy three files <file>config.m4</file>, <file>CREDITS</file> and <file>Makefile.in</file> into the same folder; these file you will find in <file>602sqlNN</file> subfolder of the PHP module source distribution archive.</p></li>
+        <li><p>Run <file>/usr/src/php-4.4.6/buildconf</file> script file.</p></li>
+        <li>
+          <p>Run <file>/usr/src/php-4.4.6/configure</file> script with one of the following variants of the <ident>--with-602sql</ident> parameters:</p>
+          <table>
+            <tr><td><strong>parameter form</strong></td><td><strong>meaning</strong></td></tr>
+            <tr><td><ident>--with-602sql</ident></td><td>
+                602SQL PHP module will be compiled into PHP interpreter executable<br/>
+                602SQL header files have to be in <file>/usr/local/include/602sqlNN</file> or <file>/usr/include/602sqlNN</file> folders<br/>
+                602SQL library files (i.e. <file>lib602krnlNN.so</file>) have to be in <file>/usr/local/lib/602sqlNN</file> or <file>/usr/lib/602sqlNN</file> folders
+            </td></tr>
+            <tr><td><ident>--with-602sql=shared</ident></td><td>
+                602SQL PHP module will be compiled as dynamically loadable module <file>php_602sqlNN.so</file> in <file>/usr/src/php-4.4.6/modules</file> folder<br/>
+                602SQL header files have to be in <file>/usr/local/include/602sqlNN</file> or <file>/usr/include/602sqlNN</file> folders<br/>
+                602SQL library files (i.e. <file>lib602krnlNN.so</file>) have to be in <file>/usr/local/lib/602sqlNN</file> or <file>/usr/lib/602sqlNN</file> folders
+            </td></tr>
+            <tr><td><ident>--with-602sql=/path</ident></td><td>
+                602SQL PHP module will be compiled into PHP interpreter executable<br/>
+                602SQL header files have to be in <file>/path/include/602sqlNN</file> folder<br/>
+                602SQL library files (i.e. <file>lib602krnlNN.so</file>) have to be in <file>/path/lib/602sqlNN</file> folder
+            </td></tr>
+            <tr><td><ident>--with-602sql=shared,/path</ident></td><td>
+                602SQL PHP module will be compiled as dynamically loadable module <file>php_602sqlNN.so</file> in <file>/usr/src/php-4.4.6/modules</file> folder<br/>
+                602SQL header files have to be in <file>/path/include/602sqlNN</file> folder<br/>
+                602SQL library files (i.e. <file>lib602krnlNN.so</file>) have to be in <file>/path/lib/602sqlNN</file> folder
+            </td></tr>
+          </table>
+        </li>
+
+        <li><p>Compile PHP and during its compilation 602SQL PHP module will be compiled too.</p></li>
+      </ol>
+    </Section-3>
+
+    <Section-3><Header>Standalone compilation of the PHP module</Header>
+      <ol>
+        <li><p>Unpack PHP module source files into an empty folder (let's it is <file>/usr/src/php_602sql</file>).</p></li>
+        <li>
+          <p>Modify following settings in <file>/usr/src/php_602sql/php_602sql.lmk</file> file:</p>
+          <table>
+            <tr><td><strong>setting</strong></td><td><strong>description</strong></td></tr>
+            <tr><td><ident>phpincdir</ident></td><td>folder with PHP header files</td></tr>
+            <tr><td><ident>phpmoddir</ident></td><td>folder with dynamically loadable PHP modules</td></tr>
+            <tr><td><ident>sql602incdir</ident></td><td>folder with 602SQL header files</td></tr>
+            <tr><td><ident>sql602libdir</ident></td><td>folder with 602SQL libraries (contains <file>lib602krnlNN.so</file>)</td></tr>
+            <tr><td><ident>sql602vermaj</ident></td><td>602SQL version number</td></tr>
+          </table>
+        </li>
+        <li>
+          <p>Compile PHP module with commands:</p>
+          <code>
+cd /usr/src/php_602sql
+make -f php_602sql.lmk
+          </code>
+          <p>PHP module will be compiled into <file>/usr/src/php_602sql/php_602sqlNN.so</file> file.</p>
+        </li>
+      </ol>
+    </Section-3>
+  </Section-2>
+</Section-1>

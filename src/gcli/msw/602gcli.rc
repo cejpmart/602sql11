@@ -1,0 +1,11 @@
+#include "version.rc"
+
+A ICON "SQL602client.ico"  // must be identified by a string, not a number, to be the 1st icon in the file!
+#if !OPEN602
+SPLASH BITMAP "splash.bmp"
+#endif
+
+VERSION_INFO_EXE("Management and Development Client",NAME_PREFIX "gcli" NAME_SUFFIX)
+
+#include "wx/msw/wx.rc"
+

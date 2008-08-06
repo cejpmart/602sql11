@@ -1,0 +1,18 @@
+/* XPM */
+static char *bookmark_symbol_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"5 10 2 1",
+"  c None",
+". c #FFFFFF",
+/* pixels */
+" ....",
+"  ...",
+"   ..",
+"    .",
+"   ..",
+"   ..",
+"    .",
+"   ..",
+"  ...",
+" ...."
+};

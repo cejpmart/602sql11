@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the WX libraries</Header>
+
+<p>The WX libraries are used only by the GUI client and by the server manager. The Windows version uses the <strong>static WX libraries</strong> and the Linux version uses the <strong>dynamic WX libraries.</strong></p>
+
+<p>The standard WX libraries cannot be used because a (small) number of patches must be applied to them. The actual list of patches depends on the version of WX you start from (some of the patches have been incorporated into the mainstream WX over time).</p> 
+
+<Section-2><Header>Building on the Windows platform</Header>
+<ol>
+
+<li>Download the source distribution of the <ident>wxWidgets</ident> for Windows from <a href="http://www.wxwidgets.org"><ident>http://www.wxwidgets.org</ident></a></li> 
+<li>Unpack (or install) it into the <file>$(SQLROOT)/..</file> directory and rename the top-level directory of the distribution (e.g. <file>wxWidgets-2.8.6</file>) to <file>wx</file>.
+<p>If the WX root directory is located and/or named differently, the configuration must be changed. You will have to update the variable WXDIR on the User Macros page in the the "common" property sheet.</p>
+</li>
+
+<li>Edit <file>$(SQLROOT)/../wx/include/wx/msw/setup.h</file> file:
+replace <code>#define wxUSE_UNICODE      0</code> by <code>#define wxUSE_UNICODE      1</code>
+and replace <code>#define wxUSE_UNICODE_MSLU 0</code> by <code>#define wxUSE_UNICODE_MSLU 1</code>
+</li>
+<li>Patch the sources with all patches that have not been incorporated into the distribution (see below).</li>
+</ol>
+
+<p>If the type of the CRT library you have chosen for the project is <em>static</em>, the WX project files must be updated as follows:</p>
+
+<ol start="5">
+<li><p>Install <ident>Bakefile</ident> from <a href="http://www.bakefile.org"><ident>http://www.bakefile.org</ident></a> (use the Windows installer with Python runtime included) and re-create the WX project files:</p>
+
+<p>If the bakefiles of your version of WX support creating .NET 2005 project files, run:</p>
+
+<code>"c:\Program Files\bakefile\src\bakefile_gen" -DRUNTIME_LIBS=static -b wx.bkl -fmsvs2005prj</code>
+
+<p>otherwise run:</p>
+
+<code>"c:\Program Files\bakefile\src\bakefile_gen" -DRUNTIME_LIBS=static -b wx.bkl -fmsvc6prj</code>
+
+<p>Do this in the <file>$(SQLROOT)/../wx/build/bakefiles</file> directory.</p></li>
+
+<li>Open the <ident>wx.dsw</ident> workspace, allow the projects to be converted and then build the following WX libraries: <ident>base</ident>, <ident>core</ident>, <ident>adv</ident>, <ident>aui</ident> and <ident>html</ident>. Use the "Unicode Release" or "Unicode Debug" configurations.</li> 
+</ol>
+</Section-2>
+
+<Section-2><Header>Building on Unix platforms</Header>
+
+<ol>
+<li>Download the source distribution of the <ident>wxWidgets</ident> for GTK from <a href="http://www.wxwidgets.org"><ident>http://www.wxwidgets.org</ident></a></li> 
+<li><p>Unpack (or install) it into the <file>$(SQLROOT)/..</file> directory. The name of the top-level directory of wxWidgets is usually in the form <file>wxGTK-x.y.z</file>. </p>
+<p>The path to the WX root directory must later be specified among configure parameters of the project using <ident>--with-wx=dir</ident> (see <a href="BUILD_CONFIGURE.xml">Building the project on Unix platforms</a>).</p>
+</li>
+<li>Patch the sources with all patches that have not been incorporated into the distribution (see below).</li>
+<li>Create the <file>debug</file> and <file>release</file> directories, enter them and run ../configure with the following options: <ident>--with-gtk --enable-unicode</ident> and optionally <ident>--enable-debug</ident>.</li>
+
+<li>Edit the <file>setup.h</file> file created in the build directory (under <file>lib/wx/include/...</file>). Remove the definition of <ident>HAVE_CXA_DEMANGLE</ident>. This is necessary if you want to link with the static <file>libstdc++.a</file> on some platforms.</li>
+
+<li>Run <ident>make</ident>. In order to build libraries statically linked to libstdc++ and libgcc, run:
+  <code>make LIBS="-v -Wl,-t -nodefaultlibs" EXTRALIBS="-L/usr/X11R6/lib -Wl,-Bdynamic,-lpthread,-lz -Wl,-Bstatic,-lstdc++ -Wl,-Bdynamic,-ldl,-lc,-lm -Wl,-Bstatic,-lgcc,-lgcc_eh -Wl,-Bdynamic"
+</code>
+</li>
+</ol>
+
+The version of the <ident>wxWidgets</ident> package must later be specified among configure parameters of the project using <ident>WXVER=</ident> and <ident>WXBLD=</ident> (see <a href="BUILD_CONFIGURE.xml">Building the project on the Unix platform</a>).
+
+</Section-2>
+
+<Section-2><Header>Recommended changes in wxWidgets libraries</Header>
+
+<Section-3><Header>Removing the visual inconsistency in wxGrid</Header>
+
+<p>When the grid selection mode is wxGridSelectRows, clicking on a cell highlights the whole row. This is inconsistent with the fact that the row is NOT selected: GetSelectedRows returns an empty set of rows.</p>
+
+<p>In the <file>src/generic/grid.cpp</file> file find the <ident>void wxGrid::ProcessGridCellMouseEvent(wxMouseEvent &amp; event)</ident> function, then find the "Left button pressed" section and remove the <ident>HighlightBlock(coords, coords);</ident> statement near the end.</p>
+</Section-3>
+
+<Section-3><Header>Patching the wxGrid (Windows only, wxWidgets older than 2.8.6)</Header>
+
+<p>In wxWidgets 2.8.4 the wxGrid class crashes when the window is being created because the <ident>WM_SIZE</ident> message may be delivered before the class is initialized.</p>
+
+<p>In the <file>src/generic/grid.cpp</file> file find the <ident>wxGrid::OnSize</ident> method and add the following code on its beginning:
+<code>
+   // escape if the window is has not been fully created yet
+    if ( m_cornerLabelWin == NULL )  
+        return;
+</code>
+</p>
+
+</Section-3>
+
+<Section-3><Header>Shape of the mouse cursor located over a gripper in a floating frame</Header>
+
+<p>When a floating frame under control of the AUI subsystem has a gripper then the mouse cursor located over the gripper has the "sizing" shape. In spite of that, no sizing is possible there.</p> 
+
+<p>In <file>src/aui/framemanager.cpp</file> find the <ident>void wxAuiManager::OnSetCursor(wxSetCursorEvent&amp; event)</ident> function and update the end to:
+<code>
+else if (part->type == wxAuiDockUIPart::typeGripper &amp;&amp;
+         !m_frame->IsKindOf(CLASSINFO(wxAuiFloatingFrame)))  // added
+        { cursor = wxCursor(wxCURSOR_SIZING);
+        }
+</code></p>
+</Section-3>
+
+<Section-3><Header>Vista SDK incompatibility (Windows only)</Header>
+
+<p>If the Vista SDK is installed and <ident>WINVER</ident> is 600 (the default) some Windows API functions will fail when called on the Windows XP platform.</p> 
+
+<p>In <file>src/msw/ownerdrw.cpp</file> find the <ident>OnInit</ident> member of the <ident>wxMSWSystemMenuFontModule</ident> class. Update the call to the <ident>SystemParametersInfo</ident> function if this way:
+<code>
+  NONCLIENTMETRICS nm;
+  nm.cbSize = sizeof(NONCLIENTMETRICS);
+#if(WINVER >= 0x0600)
+  if ((BYTE)GetVersion() &lt; 6) nm.cbSize-=sizeof(int);
+#endif
+    SystemParametersInfo(SPI_GETNONCLIENTMETRICS,nm.cbSize,&amp;nm,0);
+</code></p>
+
+</Section-3>
+
+<Section-3><Header>Patching owner-drawn menus on Windows 9x</Header>
+
+<p>The unicode version of InsertMenu sometimes crashes on Windows 9x. This may be caused by an error in unicows.dll.</p>
+
+<p>In the <file>src/msw/menu.cpp</file> file find the <ident>bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)</ident> function, then find the call of <ident>InsertMenu</ident> in it. Replace the section with something like this:
+<code>
+if (flags &amp; MF_OWNERDRAW)  // special handling for Windows 9x
+{ if ( !::InsertMenuA(GetHmenu(), pos, flags  MF_BYPOSITION, id, (const char*)pData) )
+  { wxLogLastError(wxT("InsertMenuA[Item]()"));
+    return false;
+  }
+}
+else
+{  if ( !::InsertMenu(GetHmenu(), pos, flags | MF_BYPOSITION, id, pData) )
+  { wxLogLastError(wxT("InsertMenu[Item]()"));
+    return false;
+  }
+}  
+</code></p>
+</Section-3>
+
+<Section-3><Header>Better detection of the system language (Unix only)</Header>
+
+<p>The system language may be specified by any of a number of environment variables on various platforms. The <ident>wxWidgets</ident> checks the <ident>LC_ALL</ident>, <ident>LC_MESSAGES</ident> and <ident>LANG</ident> variables. If none of the variables is set (e.g. on SuSe Linux) it is usefull to check the <ident>LC_CTYPE</ident> variable.</p>
+
+<p>In <file>src/common/intl.cpp</file> find the <ident>wxLocale::GetSystemLanguage()</ident> function and add
+<code>&amp;&amp; !wxGetEnv(wxT("LC_CTYPE"), &amp;langFull)</code>
+to it.</p>
+
+</Section-3>
+
+
+</Section-2>
+
+</Section-1>

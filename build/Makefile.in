@@ -1,0 +1,93 @@
+# Top-level Makefile
+SUBDIRS=@SUBDIRS@
+prefix=@prefix@
+
+OUTPUTPATH=@top_srcdir@/../@OUTPUTDIR@/@CONFNAME@
+ALLDIRS=$(SUBDIRS) @OPTDIRS@
+# Delegating the main build targets to subdirectories
+.PHONY: subdirs $(SUBDIRS)
+all: subdirs
+
+subdirs: $(SUBDIRS) 
+total: $(ALLDIRS)
+srv: zip sec
+krnl: sec
+gcli: krnl zip 
+odbcw: krnl 
+mng: krnl
+$(ALLDIRS): 
+	$(MAKE) -C $@
+########################### creating the installation ###############################
+instdirs:
+	for DIR in $(SUBDIRS); do $(MAKE) -C $$DIR prefix=$(prefix) install; done
+
+install: instdirs
+	# preparing .mo files for the project (gcli+mng):
+	+for LANG in @LANGS@; do \
+		if test -e ../../src/gcli/$$LANG.po; then \
+			install -d $(prefix)share/locale/$$LANG/LC_MESSAGES;\
+			msgfmt -o $(prefix)share/locale/$$LANG/LC_MESSAGES/@PREF@gcli@EXT@.mo ../../src/gcli/$$LANG.po;\
+		fi \
+	done
+	+for LANG in @LANGS@; do \
+		if test -e ../../src/mng/$$LANG.po; then \
+			install -d $(prefix)share/locale/$$LANG/LC_MESSAGES;\
+			msgfmt -o $(prefix)share/locale/$$LANG/LC_MESSAGES/@PREF@mng@EXT@.mo ../../src/mng/$$LANG.po;\
+		fi \
+	done
+	# adding .mo files for wxWidgets libraries:
+	+if test "@USE_WX@" = "yes"; then \
+		for LANG in @LANGS@; do \
+		if test -e @WXROOT@/locale/$$LANG.po; then \
+			install -d $(prefix)share/locale/$$LANG/LC_MESSAGES;\
+			msgfmt -o $(prefix)share/locale/$$LANG/LC_MESSAGES/wxstd.mo @WXROOT@/locale/$$LANG.po;\
+		fi \
+		done \
+	fi
+	# copying WX libraries:
+	for WXLIB in @WXLIBS@; do \
+		cp @WXLIBTESTDIR@/lib$$WXLIB.so.0.@WXBLD@ $(prefix)lib/@pkgsubdir@;\
+		chmod 755 $(prefix)lib/@pkgsubdir@/lib$$WXLIB.so.0.@WXBLD@;\
+	done
+	cd $(prefix)lib/@pkgsubdir@;\
+		for WXLIB in @WXLIBS@; do \
+			ln -sf lib$$WXLIB.so.0.@WXBLD@ lib$$WXLIB.so.0;\
+			chmod 755 lib$$WXLIB.so.0;\
+			ln -sf lib$$WXLIB.so.0 lib$$WXLIB.so;\
+			chmod 755 lib$$WXLIB.so;\
+		done
+	# copying help files:
+	install -d $(prefix)share/doc/@pkgsubdir@
+	if test -e ../../doc/help/help-en.zip; then \
+		cp ../../doc/help/help-en.zip $(prefix)share/doc/@pkgsubdir@/@PREF@sql@EXT@en.zip; \
+	fi
+	+for LANG in @LANGS@; do \
+		if test -e ../../doc/help/help-$$LANG.zip; then \
+			cp ../../doc/help/help-$$LANG.zip $(prefix)share/doc/@pkgsubdir@/@PREF@sql@EXT@$$LANG.zip; \
+		fi \
+	done
+	# copying man files:
+	install -d $(prefix)share/man/man1
+	cp -p ../../doc/man/*.1 $(prefix)share/man/man1
+	cp -p ../../doc/man/*.1.gz $(prefix)share/man/man1
+	cd $(prefix)share/man/man1 && ln -s sql.1 @PREF@sql@EXT@.1 
+	cd $(prefix)share/man/man1 && ln -s ccli.1.gz @PREF@ccli@EXT@.1.gz
+	chmod 644 $(prefix)share/man/man1/*
+    
+    
+    
+# Other targets passed to subdirectories
+clean:
+	+for DIR in $(ALLDIRS); do $(MAKE) -C $$DIR $@; done
+dclean:
+	+for DIR in $(ALLDIRS); do rm -f $$DIR/*.d; done
+####### Making configure and this Makefile ###############################
+$../configure: ../@CONFIGURE_NAME@.ac
+	cd .. && autoconf -o @CONFIGURE_NAME@ @CONFIGURE_NAME@.ac && cp -p @CONFIGURE_NAME@ configure
+
+Makefile: ../Makefile.in ../conf.h.in config.status
+	./config.status
+
+config.status: ../@CONFIGURE_NAME@.ac
+	cd .. && autoconf -o @CONFIGURE_NAME@ @CONFIGURE_NAME@.ac && cp -p @CONFIGURE_NAME@ configure
+	rpmsdir=$(rpmsdir) ./config.status --recheck

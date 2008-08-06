@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the SDBC Driver</Header>
+
+  <Section-2><Header>SDBC driver source files</Header>
+    <p><table>
+        <tr>
+          <td><strong>file name</strong></td>
+          <td><strong>file description</strong></td>
+        </tr>
+        <tr><td><file>BUILD_SDBC.xml</file></td><td>this file</td></tr>
+        <tr><td><file>*.h *.hxx *.cxx</file></td><td>SDBC driver source files</td></tr>
+        <tr><td><file>602sql-sdbc.uno</file></td><td>SDBC driver parameters</td></tr>
+        <tr><td><file>602sql-sdbc-version.mk</file></td><td>SDBC driver version macros</td></tr>
+        <tr><td><file>DataAccess.xcu</file></td><td>component definition file of the SDBC driver</td></tr>
+        <tr><td><file>makefile.mk</file></td><td>SDBC driver makefile (for dmake)</td></tr>
+    </table></p>
+  </Section-2>
+
+  <Section-2><Header>Prequisities</Header>
+    <p><strong>602SQL version 11.0</strong><br/>
+      602SQL should be installed to test functionality of compiled SDBC driver. Existence of <file>lib602krnlNN.so</file> in <file>/usr/lib</file> is needed to successfully compile SDBC driver on Linux.
+    </p>
+    <p><strong>OpenOffice.org source and build tree</strong><br/>
+      SDBC driver is compiled as part of OpenOffice.org compilation.
+    </p>
+  </Section-2>
+
+  <Section-2><Header>Building the SDBC driver</Header>
+
+    <ol>
+      <li>Get OpenOffice.org source and prepare build tree (let's it is in <file>c:\OOo-src</file> directory). It's essential you can compile OOo sources at least in <tt>connectivity</tt> subdirectory.</li>
+
+      <li>Unpack SDBC driver source zip into <file>c:\OOo-src\connectivity\source\drivers\602sql</file> directory.</li>
+
+      <li>Run command-line prompt (console) that is enabled to build OpenOffice.org.</li>
+
+      <li><p>Compile SDBC driver with commands
+      <code>
+C:
+cd \OOo-src\connectivity\source\drivers\602sql
+dmake
+      </code>
+      SDBC driver will be compiled into <file>C:\OOo-src\connectivity\wntmsci10.pro\bin\602sql-sdbc-N.N.N.zip</file> file on Windows or into <file>/OOo-src/connectivity/unxlngi6.pro/lib/602sql-sdbc-N.N.N.zip</file> on Linux where <tt>N.N.N</tt> is SDBC version number.</p>
+    </li>
+    </ol>
+  </Section-2>
+
+</Section-1>

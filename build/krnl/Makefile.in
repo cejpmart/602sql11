@@ -1,0 +1,98 @@
+#Makes:   libPREFkrnlEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=krnl
+VPATH=$(top_dir)/src/$(ownsubdir)
+libname=lib@PREF@krnl@EXT@
+fulllibname=$(libname).so.$(MAJOR).$(MINOR)
+seclib=@PREF@sec@EXT@
+ziplib=@PREF@zip@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+all: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so
+     
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a :$(libname).a
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp -dp $(libname).a $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname): $(fulllibname)
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(fulllibname) $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR): $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(fulllibname) $(libname).so.$(MAJOR); 
+	
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(libname).so.$(MAJOR) $(libname).so; 
+        
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) -I $(top_dir)/src/$(ownsubdir) \
+ -I $(top_dir)/src/common     -I $(top_dir)/src/common/unix \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/include/sec    -I $(top_dir)/include/zip -I .. \
+ -I $(top_dir)/@UNIXODBCDIR@/include
+# Looking into @UNIXODBCDIR@/include for sql.h etc. because unixODBC may be downloaded but not installed. 
+DEFINES=-DKERN
+CPPFLAGS=--imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES) @CPPFLAGS@ 
+CXXFLAGS=@CXXFLAGS@ -fpic 
+CFLAGS=@CFLAGS@ -fpic 
+LIBLIBS=`relaytool --relay odbc -lodbc` -Wl,-Bstatic,-l$(seclib),-lcryptopp,-l$(ziplib) -Wl,-Bdynamic,-ldl -lpthread @LIBSTDLIBS@
+
+# -lkrb5  -- temporarily removed in version 9
+#	 /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libk5crypto.a /usr/kerberos/lib/libcom_err.a \
+#@KERBLIBS@
+LDFLAGS='-Wl,-rpath=$$ORIGIN' @LDFLAGS@ -Wl,-t -v @NODEFAULTLIBS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L $(top_dir)/@CRYPTOPPDIR@/@CONFNAME@ -L /usr/lib
+ 
+#-L /usr/lib/univ 
+# -Wl,-no_undefined  -- generates strange message about krb5
+#-Wl,-Bsymbolic  -- makes impossible to replace fake load_inst_cache_addr from uxclient in dataproc9
+
+#ln -fs $(pkgsubdir)/$(fulllibname) $(libname).so.$(MAJOR)
+# The above ln is needed by the Kylix konsole because it does not contain rpath
+
+LIBSOURCES1= cint.cpp memory.cpp common.cpp contr.cpp wprocs.cpp netapi.cpp interp.cpp \
+ wcompil.cpp wcomp1.cpp call.cpp tabanal.cpp queryanal.cpp comp2.cpp replac9.cpp \
+ impexp.cpp objlist9.cpp dupldb.cpp srvmng.cpp
+LIBSOURCES2 = cache9.cpp odbcsupp9.cpp ierun9.cpp
+LIBSOURCES3 = unix/tcpipux.cpp 
+
+LIBOBJECTS1=$(LIBSOURCES1:.cpp=.o)
+LIBOBJECTS2=$(LIBSOURCES2:.cpp=.o)
+LIBOBJECTS3=$(LIBSOURCES3:.cpp=.o)
+.SECONDARY: $(LIBOBJECTS1) $(LIBOBJECTS2) $(LIBOBJECTS3)
+
+call.o: CPPFLAGS+=-O0
+# Otherwise the stack frame is damaged by the optimization
+
+$(LIBOBJECTS3): $(top_dir)/build/@CONFNAME@/$(ownsubdir)/unix 
+
+$(top_dir)/build/@CONFNAME@/$(ownsubdir)/unix:
+	install -d unix
+
+$(libname).a: $(libname).a($(LIBOBJECTS1) $(LIBOBJECTS3))
+
+$(fulllibname): $(LIBOBJECTS1) $(LIBOBJECTS2) $(LIBOBJECTS3) $(OUTPUTPATH)/lib/@pkgsubdir@/lib$(seclib).a
+	$(CXX) -Wl,-soname=$(libname).so.$(MAJOR) -shared $(LDFLAGS) -o $@ $^ $(LIBLIBS) 
+
+#### Other targets #################################################################
+clean:
+	rm -f *.o lib* 
+install: all
+	install -d $(prefix)lib/@pkgsubdir@
+	cp $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) $(prefix)lib/@pkgsubdir@
+	cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so $(prefix)lib/@pkgsubdir@
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(LIBSOURCES1:.cpp=.d)
+include $(LIBSOURCES2:.cpp=.d)

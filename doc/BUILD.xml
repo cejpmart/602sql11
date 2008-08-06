@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Building the project</Header>
+
+<p>This is the top-level description of the build process.</p>
+
+<p>Building has been tested on Microsoft Windows and in several Linux distributions. On the Widnows platform use <ident>Visual Studio 2005</ident> or <ident>Visual C++ Express 2005</ident>. On Linux, only the standard tools are used.</p>
+
+<Section-2><Header>External dependency projects</Header>
+
+<p>The project is dependent on several third-party open-source projects. Building these projects is described in separate documents: <a href="BUILD_PCRE.xml">Building the PCRE library</a>, <a href="BUILD_CRYPTOPP.xml">Building the Crypto++ library</a>, <a href="BUILD_INTL.xml">Building the Intl library</a>, <a href="BUILD_WX.xml">Building the WX libraries</a>, <a href="BUILD_ODBC.xml">Building ODBC support</a> and <a href="BUILD_RELAYTOOL.xml">Installing the relaytool</a>. Build these before building the project. The following table shows the dependencies:</p>
+
+<p><table>
+<tr>
+<td><strong>Project</strong></td>  
+<td><strong>Windows</strong></td>  
+<td><strong>Unix</strong></td>  
+</tr>  
+<tr>
+<td><ident>PCRE</ident></td>  
+<td>Build</td>  
+<td>Build</td>  
+</tr>  
+<tr>
+<td><ident>Crypto++</ident></td>  
+<td>Build</td>  
+<td>Build</td>  
+</tr>  
+<tr>
+<td><ident>Intl</ident></td>  
+<td>Build or use GNU binaries for Windows</td>  
+<td>Use from the distribution</td>  
+</tr>  
+<tr>
+<td><ident>wxWidgets</ident></td>  
+<td>Build if you need the GUI client</td>  
+<td>Build if you need the GUI client</td>  
+</tr>  
+<tr>
+<td><ident>ODBC</ident></td>  
+<td>Built-in</td>  
+<td>Build or use from the distribution</td>  
+</tr>  
+<tr>
+<td><ident>relaytool</ident></td>  
+<td>Not used</td>  
+<td>Download and install</td>  
+</tr>  
+</table>
+</p>
+
+<p>The project may be built in "debug" or "release" configuration. Both configurations may coexist. In the description of the build process, the selected configuration will be denoted as <ident>$(CONF_NAME)</ident>.</p>
+
+<p>The build process starts with unpacking the project into a directory. The directory is later referenced as <ident>$(SQL_ROOT)</ident>. Then prepare all dependency projects listed above.</p>
+
+<p>The directory structure below <ident>$(SQL_ROOT)</ident> is described <a href="BUILD_DIRECTORIES.xml">here</a>.</p>
+</Section-2>
+
+
+<Section-2><Header>Description of subprojects</Header>
+
+<p>The project consists of a number of subprojects:</p>
+<p><table>
+<tr>
+<td><strong>Name</strong></td>  
+<td><strong>Description</strong></td>  
+<td><strong>Depends on</strong></td>  
+</tr>  
+<tr>
+<td><ident>zip</ident></td>  
+<td>Compression library for files larger than 4 GB</td>  
+<td>-</td>  
+</tr>  
+<tr>
+<td><ident>sec</ident></td>  
+<td>Cryptograpy and authentication utilities</td>  
+<td><ident>Crypto++</ident></td>  
+</tr>  
+<tr>
+<td><ident>krnl</ident></td>  
+<td>Main client library that communicates with the 602SQL server (dynamic)</td>  
+<td><ident>sec</ident>, <ident>odbc</ident>, <ident>relaytool</ident> (on Unix)</td>  
+</tr>  
+<tr>
+<td><ident>krnllib</ident></td>  
+<td>Main client library taht communicates with the 602SQL server (static)</td>  
+<td><ident>sec</ident></td>  
+</tr>  
+<tr>
+<td><ident>odbcw</ident></td>  
+<td>ODBC driver (on Windows also contains the setup functions)</td>  
+<td><ident>krnllib</ident></td>  
+</tr>  
+<tr>
+<td><ident>odbccfg</ident></td>  
+<td>ODBC configuration utility for unixODBC (Unix only)</td>  
+<td><ident>unixODBC</ident></td>  
+</tr>  
+<tr>
+<td><ident>gcli</ident></td>  
+<td>GUI client</td>  
+<td><ident>krnl</ident>, <ident>zip</ident>, <ident>wxWidgets</ident></td>  
+</tr>  
+<tr>
+<td><ident>srv</ident></td>  
+<td>SQL server</td>  
+<td><ident>sec</ident>, <ident>zip</ident>, <ident>PCRE</ident>, <ident>intl</ident></td>  
+</tr>  
+<tr>
+<td><ident>svc</ident></td>  
+<td>SQL server as a Windows service</td>  
+<td><ident>sec</ident>, <ident>zip</ident>, <ident>PCRE</ident>, <ident>intl</ident></td>  
+</tr>  
+<tr>
+<td><ident>mng</ident></td>  
+<td>Server manager with GUI</td>  
+<td><ident>krnl</ident>, <ident>wxWidgets</ident></td>  
+</tr>  
+</table>
+</p>
+
+<p>The following subprojects are described in separate documents:</p>
+<p><table>
+<tr>
+<td><strong>Name</strong></td>  
+<td><strong>Description</strong></td>  
+</tr>  
+<tr>
+<td><a href="BUILD_PHP.xml">PHP module</a></td>  
+<td>Module for accessing the database from PHP scripts</td>  
+</tr>  
+<tr>
+<td><a href="BUILD_JDBC.xml">JDBC driver</a></td>  
+<td>Driver for accessing the database from Java programs</td>  
+</tr>  
+<tr>
+<td><a href="BUILD_SDBC.xml">SDBC driver</a></td>  
+<td>Driver for accessing the database from OpenOffice programs</td>  
+</tr>  
+</table>
+</p>
+
+
+</Section-2>
+
+
+<Section-2><Header>Building on the Windows platform</Header>
+
+<p>The build process is described by multiple property sheets and by several property pages in individual projects. The projects inherit many parameter values from the property sheets. A brief description of paramters can be found <a href="BUILD_PARAMETERS_MSW.xml">here</a>. Usually it is not necessary to modify anything other than some user macros in the "common" property sheet.</p>
+
+<Section-3><Header>C runtime library type</Header>
+
+<p>All parts of an executable or a dynamic library must use the same type of C runtime libraries (CRT). Because static libraries from the project and from the dependency projects are used in multiple dynamic libraries and executables, it is wise to extent this rule to all compiled objects and to use the same type of CRT in all modules.</p> 
+
+<p>The type of CRT is specified by the value of "Runtime Library" option in the "C/C++ Code Generation" property page.</p>
+
+<p>For all subprojects of the project the type of CRT is defined in "common debug" and "common release" property sheets. The default setting is "static". For external projects modify the corresponding property pages or makefiles.</p>
+
+<p>When deciding which type of C runtime library to use, take into consideration the following:
+<ul><li>Using the static CRT makes the resulting binaries some tens of kilobytes bigger.</li>
+<li>Using the dynamic CRT means that you have to deploy the CRT dll. Check if you are eligible to do this.</li>
+<li>It is not clear if using the dynamic CRT for <ident>libintl</ident> violates the LGPL.</li>
+<li>With the static CRT, the language of the SQL server depends on the <ident>LANGUAGE</ident> environment variable or locales, and cannot by defined by the option in the GUI client.</li></ul></p>
+
+</Section-3>
+
+<p>In order to build the project:
+<ol>
+<li>Open the solution (<file>.sln</file>) file located in the build subdirectory.</li>
+<li>In the <strong>Property Manager</strong>, open the "common" property sheet and edit the page <strong>User Macros</strong>. Define the paths to the dependency project root directories. Update values of other variables, if necessary.</li> 
+<li>Select the <ident>$(CONF_NAME)</ident> configuration and build the solution.</li>
+</ol></p>
+
+<p>Output files are either in the <ident>output\$(CONF_NAME)</ident> or in the <ident>output\$(CONF_NAME)_$(PlatformName)</ident> subdirectory. The full binary tree is the <ident>$(InstRoot)</ident> directory, where <ident>InstRoot</ident> is a macro defined in the "common" property sheet.</p>
+
+</Section-2>
+
+
+<Section-2><Header>Building on the Unix platforms</Header>
+
+<p>The build process is driven by the autoconf system.</p> 
+
+<ol>
+<li>In <ident>$(SQL_ROOT)/build</ident>, prepare the configuration directory (debug or release):
+<code>mkdir $(CONF_NAME)</code>
+<code>cd $(CONF_NAME)</code></li>
+<li><code>../configure configure-params</code>
+<p>The configure parameters are described <a href="BUILD_CONFIGURE.xml">here</a>.</p>
+</li>
+<li><code>make</code>
+<p>This produces project binaries in the <ident>output/$(CONF_NAME)</ident> subdirectory.</p>
+</li>
+<li><code>make prefix=&lt;path&gt;/ install</code>
+<p>This creates the installation tree in the directory defined by the specified prefix. All binaries are relocable: the directory structure may be copied to <file>/usr</file>, <file>/usr/local</file>, <file>/opt</file> or any other place, and will run there.</p>
+</li>
+</ol>
+
+</Section-2>
+</Section-1>

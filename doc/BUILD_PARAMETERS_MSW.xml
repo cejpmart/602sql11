@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?xml-stylesheet href="tohtml.xsl" type="text/xsl"?>
+
+<Section-1><Header>Build parameters on the MSW platform</Header>
+
+<Section-2><Header>User macros defined in the "common" property sheet</Header>
+
+<p><table>
+<tr>
+<td><strong>Macro name</strong></td>  
+<td><strong>Description</strong></td>  
+</tr>  
+<tr>
+<td><ident>NamePrefix</ident></td>  
+<td>prefix of file names of all created binaries</td>  
+</tr>  
+<tr>
+<td><ident>NameSuffix</ident></td>  
+<td>suffix of file names of all created binaries</td>  
+</tr>  
+<tr>
+<td><ident>InternalVersion</ident></td>  
+<td>The internal version number (cannot be smaller than 1100)</td>  
+</tr>  
+<tr>
+<td><ident>InstRoot</ident></td>  
+<td>Directory to which the install project copies the binaries</td>  
+</tr>  
+<tr>
+<td><ident>LANGS</ident></td>  
+<td>list of language codes with .po and/or help files available</td>  
+</tr>  
+<tr>
+<td><ident>OPEN602</ident></td>  
+<td>must always be 1</td>  
+</tr>  
+</table>
+</p>
+
+<p><em>Example:</em> The SQL server binary file name on the Windows platform is <file>$(NamePrefix)sql$(NameSuffix).exe</file>. If <ident>NamePrefix</ident> is "abc" and NameSuffix is "8x" the file name <file>abcsql8x.exe</file>.</p>
+
+<p>The values of <ident>NamePrefix</ident>, <ident>NameSuffix</ident> and <ident>InternalVersion</ident> are passed to the C++ compiler using the command-line.</p> 
+
+<p>Other user macros define the paths to the dependency projects. The path is always relative to the <file>$(SQL_ROOT)</file> root directory of the project.</p>
+
+<p><table>
+<tr>
+<td><strong>Macro name</strong></td>  
+<td><strong>Path to project</strong></td>  
+<td><strong>Default value</strong></td>  
+</tr>  
+<tr>
+<td><ident>PCREDIR</ident></td>  
+<td>PCRE</td>  
+<td>..\pcre</td>  
+</tr>  
+<tr>
+<td><ident>CRYPTOPPDIR</ident></td>  
+<td>Crypto++</td>  
+<td>..\crypto</td>  
+</tr>  
+<tr>
+<td><ident>WXDIR</ident></td>  
+<td>wxWidgets</td>  
+<td>..\wx</td>  
+</tr>  
+<tr>
+<td><ident>INTLDIR</ident></td>  
+<td>libintl (directory containing the import library)</td>  
+<td>tools\msw</td>  
+</tr>  
+</table>
+</p>
+</Section-2>
+
+<Section-2><Header>User macros defined in the "Win32" property sheet</Header>
+
+<p><table>
+<tr>
+<td><strong>Macro name</strong></td>  
+<td><strong>Description</strong></td>  
+</tr>  
+<tr>
+<td><ident>UnicowsLibs</ident></td>  
+<td>The list of libraries making the project compatible with W98.</td>  
+</tr>  
+</table>
+</p>
+</Section-2>
+
+
+<Section-2><Header>Common Property Sheet</Header>
+
+<Section-3><Header>C/C++ Preprocessor section</Header>
+Preprocessor Definitions: WBVERS=$(InternalVersion);NAME_PREFIX=""$(NamePrefix)"";NAME_SUFFIX=""$(NameSuffix)"";WINS;OPEN602=$(OPEN602)
+</Section-3>
+
+<Section-3><Header>C/C++ Code Generation section</Header>
+Enable C++ Exception: Specify No in order to remove the /EHsc option (and add /EHs - see below)
+</Section-3>
+
+<Section-3><Header>C/C++ Precompiled Headers section</Header>
+Create/Use Precompiled Header: Use Precompiled Header
+</Section-3>
+
+<Section-3><Header>C/C++ Command Line</Header> 
+Specify /EHs in order to allow C++ exceptions in all functions
+</Section-3>
+
+<Section-3><Header>Linker General section</Header>
+<p>Output File: $(OutDir)\$(NamePrefix)$(ProjectName)$(NameSuffix).exe</p>
+<p>Additional Library Directories: $(OutDir)</p>
+</Section-3>
+
+<Section-3><Header>Librarian General section</Header>
+Output File: $(OutDir)\$(NamePrefix)$(ProjectName)$(NameSuffix).lib
+</Section-3>
+
+<Section-3><Header>Resources General section</Header>
+Preprocessor Definitions: WBVERS=$(InternalVersion);NAME_PREFIX=""$(NamePrefix)"";NAME_SUFFIX=""$(NameSuffix)"";OPEN602=$(OPEN602)
+</Section-3>
+</Section-2>
+
+<Section-2><Header>Common Debug Property Sheet</Header>
+
+<Section-3><Header>C/C++ General section</Header>
+Debug Information Format: Program Database
+</Section-3>
+
+<Section-3><Header>C/C++ Optimization section</Header>
+Optimization: Disabled
+</Section-3>
+
+<Section-3><Header>C/C++ Preprocessor section</Header>
+_DEBUG
+</Section-3>
+
+<Section-3><Header>C/C++ Code Generation section</Header>
+Runtime Library: Multithreaded Debug
+</Section-3>
+
+<Section-3><Header>Linker Debugging section</Header>
+Generate Debug Info: Yes
+</Section-3>
+</Section-2>
+
+<Section-2><Header>Common Release Property Sheet</Header>
+
+<Section-3><Header>C/C++ Optimization section</Header>
+<p>Optimization: Maximize speed</p>
+<p>Whole Program Optimization: Enable link-time code generation</p>
+</Section-3>
+
+<Section-3><Header>C/C++ Preprocessor section</Header>
+NDEBUG
+</Section-3>
+
+<Section-3><Header>C/C++ Code Generation section</Header>
+Runtime Library: Multithreaded
+</Section-3>
+
+<Section-3><Header>Linker Optimization section</Header>
+Link Time Code Generation: Use Link Time Code Generation
+</Section-3>
+</Section-2>
+
+
+<Section-2><Header>Win32 Property Sheet</Header>
+
+<Section-3><Header>General section</Header>
+<p>Output Directory: $(SolutionDir)..\output\$(ConfigurationName)</p>
+<p>Intermediate Directory: $(ConfigurationName)_$(ProjectName)</p>
+</Section-3>
+
+</Section-2>
+
+
+
+<Section-2><Header>X64 Property Sheet</Header>
+
+<Section-3><Header>General section</Header>
+<p>Output Directory: $(SolutionDir)..\output\$(ConfigurationName)_$(PlatformName)</p>
+<p>Intermediate Directory: $(ConfigurationName)_$(PlatformName)_$(ProjectName)</p>
+</Section-3>
+
+<Section-3><Header>Resources General section</Header>
+Preprocessor Definitions: WX_CPU_AMD64
+</Section-3>
+
+</Section-2>
+
+
+<Section-2><Header>Individual Project Properties</Header>
+
+<Section-3><Header>General section</Header>
+Character Set: Unicode Character Set in the gcli project, Multi-Byte Character Set in others
+</Section-3>
+
+<Section-3><Header>C/C++ General section</Header>
+Additional Include Directories: depend on the project. All directories are specified relative to the project file. Frequently used directories are ..\include\zip; ..\include\sec; ..\include\common etc. The sec and seclib projects use the ..\$(CRYPTOPPDIR)\.. directory. The srv and svc projects use the ..\$(PCREDIR) directory.
+</Section-3>
+
+<Section-3><Header>C/C++ Precompiled Headers section</Header>
+Create/Use Precompiled Header: In the zip project specify Not Using Precompiled Headers.
+</Section-3>
+
+<Section-3><Header>Resources General section</Header>
+Additional Include Directories: Specify ..\include\common;..\include\common\msw;..\src\common\msw. For the srv project add ..\include\srv. For the gcli project add ..\..\wx\include.
+</Section-3>
+
+<Section-3><Header>Linker General Section</Header>
+<p>Output File: In dynamic libraries specify $(OutDir)\$(NamePrefix)$(ProjectName)$(NameSuffix).dll</p>
+<p>Additional Library Directories: Specify ..\$WXDIR)\lib\vc_lib in the gcli and mng projects. Add ..\$(CRYPTOPPDIR)\$(PlatformName)\output\$(ConfigurationName) in the srv, svc, sec, odbcw and krnl projects. Add ..\$P(CREDIR)\$(ConfigurationName) and ..\$(INTLDIR) in srv and svc projects.</p>
+</Section-3>
+
+<Section-3><Header>Linker Input section</Header>
+Additional Dependencies: Specify the dependency libraries like $(NamePrefix)sec$(NameSuffix).lib $(NamePrefix)zip$(NameSuffix).lib $(NamePrefix)krnl$(NameSuffix).lib. In the gcli project add wxbase28u.lib wxmsw28u_core.lib wxmsw28u_adv.lib wxmsw28u_aui.lib. In the srv, svc, sec, odbcw and krnl projects add cryptlib.lib. In the srv and sec projects add pcre.lib and libintl.lib.
+</Section-3>
+
+<Section-3><Header>Linker Advanced section</Header>
+<p>Specify Entry Point in the ODBC driver as DllEntryPoint.</p>
+</Section-3>
+
+</Section-2>
+
+<Section-2><Header>Individual File Properties</Header>
+
+<Section-3><Header>C/C++ Precompiled Headers section</Header>
+One source file in every project must have option
+Create/Use Precompiled Header: Create Precompiled Header
+</Section-3>
+</Section-2>
+</Section-1>

@@ -1,0 +1,67 @@
+#Makes:   libPREFsecEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=sec
+VPATH=$(top_dir)/src/$(ownsubdir)
+libname=lib@PREF@sec@EXT@
+fulllibname=$(libname).so.$(MAJOR).$(MINOR)
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+SOURCES= certif.cpp certreq.cpp cmem.cpp ideaxcbc.cpp \
+	 keygen.cpp pk.cpp secur.cpp message.cpp edmd5.cpp eddes.cpp
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/@CRYPTOPPDIR@/.. -I .. 
+DEFINES=
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+CXXFLAGS=@CXXFLAGS@ -fPIC
+CFLAGS=@CFLAGS@ -fPIC
+
+LDFLAGS=-Wl,-t,-soname=$(libname).so.$(MAJOR) -v @NODEFAULTLIBS@ -L $(top_dir)/@CRYPTOPPDIR@/@CONFNAME@ @LDFLAGS@
+
+all: $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so \
+     $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a 
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname): $(fulllibname)
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(fulllibname) $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR): $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(fulllibname) $(libname).so.$(MAJOR); 
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR)    
+	cd $(OUTPUTPATH)/lib/@pkgsubdir@; \
+		ln -fs $(libname).so.$(MAJOR) $(libname).so; 
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a: $(libname).a
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(libname).a $(OUTPUTPATH)/lib/@pkgsubdir@
+
+$(libname).a:$(libname).a($(OBJECTS))
+
+$(fulllibname): $(OBJECTS)
+	g++ $(LDFLAGS) -shared -o $@ $^ -lcryptopp $(LIBSTDLIBS)
+
+#### Other targets #################################################################
+clean:
+	rm -f *.o $(libname).a $(fulllibname)
+install: all  
+	# -- linking statically, not distributing
+	#install -d $(prefix)lib/@pkgsubdir@
+	#cp $(OUTPUTPATH)/lib/@pkgsubdir@/$(fulllibname) $(prefix)lib/@pkgsubdir@
+	#cp -d $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).so.$(MAJOR) $(prefix)lib/@pkgsubdir@
+	
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES:.cpp=.d)

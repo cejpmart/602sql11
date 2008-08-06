@@ -1,0 +1,41 @@
+# Makes: libPREFzipEXT.a
+# ATTN: Some source files are .c
+
+top_dir=@top_srcdir@/..
+ownsubdir=zip
+VPATH=$(top_dir)/src/$(ownsubdir)
+libname=lib@PREF@zip@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir)
+DEFINES=
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+CXXFLAGS=@CXXFLAGS@ -fPIC
+CFLAGS=@CFLAGS@ -fPIC
+
+all: $(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a
+
+$(OUTPUTPATH)/lib/@pkgsubdir@/$(libname).a: $(libname).a
+	install -d $(OUTPUTPATH)/lib/@pkgsubdir@
+	cp $(libname).a $(OUTPUTPATH)/lib/@pkgsubdir@
+
+LIBCPPSOURCES=602ZipUtil.cpp 602zip.cpp 602unzip.cpp
+LIBCSOURCES=adler32.c compress.c crc32.c inflate.c deflate.c inffast.c inftrees.c trees.c zutil.c 
+
+LIBCOBJECTS=$(LIBCSOURCES:.c=.o)
+LIBCPPOBJECTS=$(LIBCPPSOURCES:.cpp=.o)
+
+$(libname).a: $(libname).a($(LIBCOBJECTS) $(LIBCPPOBJECTS))
+
+#### Other targets #################################################################
+clean:
+	rm -f $(libname).a $(LIBCOBJECTS) $(LIBCPPOBJECTS)     
+install: all
+	# no action    
+
+#### Standard rules ###############################################################
+.SECONDARY: $(LIBCOBJECTS) $(LIBCPPOBJECTS)
+include $(top_dir)/build/Rules.make
+include $(LIBCPPSOURCES:.cpp=.d)
+include $(LIBCSOURCES:.c=.d)

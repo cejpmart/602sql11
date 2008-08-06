@@ -1,0 +1,25 @@
+/* XPM */
+static char *_del_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 3 1",
+". c Black",
+"  c None",
+"X c #808080",
+/* pixels */
+"                ",
+" ..         ..  ",
+" ...       ...  ",
+"  ...     ...X  ",
+"   ...   ...XX  ",
+"    ... ...XX   ",
+"     .....XX    ",
+"      ...XX     ",
+"     .....      ",
+"    ...X...     ",
+"   ...XX ...    ",
+"  ...XX   ...   ",
+" ...XX     ...  ",
+" ..XX       ..X ",
+"  XX         XX ",
+"                "
+};

@@ -1,0 +1,18 @@
+/* XPM */
+static char *pos_symbol_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"10 10 2 1",
+". c #00FFFF",
+"  c None",
+/* pixels */
+"          ",
+".         ",
+"....      ",
+".......   ",
+"..........",
+"..........",
+".......   ",
+"....      ",
+".         ",
+"          "
+};

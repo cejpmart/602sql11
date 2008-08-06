@@ -1,0 +1,15 @@
+// conf.h.in
+// conf.h is produced by configure from conf.h.in 
+
+#define NAME_PREFIX "@PREF@"
+#define NAME_SUFFIX "@EXT@"
+
+// Defining __UCLIBC_HAS_XLOCALE__ when standard xlocale are available
+@XLOCALEDEF@
+
+// Name of the subdirectory in lib and doc directories
+#undef WB_LINUX_SUBDIR_NAME
+#define WB_LINUX_SUBDIR_NAME "@pkgsubdir@"
+
+// The value from configure
+#define OPEN602 @OPEN602@

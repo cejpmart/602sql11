@@ -1,0 +1,29 @@
+.TH 602sql11 1 1 602sql11 "Juli 2007" "Tools" LINUX
+.SH Jmeno
+602sql11 - 602SQL Open Server
+
+.SH Usage
+\fB602sql11\fP [options]
+
+.SH Description
+602SQL Open Server is a relational database management system for Microsoft Windows and Linux. The server can be started as a console application or as a daemon.
+The server must be started with a database specified by a command line option. A new database can be created using the GUI client 602gcli11.
+
+.SH Options
+.IP "-n database"
+name of the database for the 602SQL server
+.IP "-p password"
+password must be specified when the contents of the database is password protected
+.IP "-d"
+starts the server in the backgroud as a daemon
+.IP "-P"
+outputs the process number (PID)
+.IP "-h"
+outputs help with a description of options
+.IP "-v"
+outputs the version number of the program
+.IP "-q"
+starts the server without activating system triggers (e.g. _on_server_start)
+.PP
+Option \fI-n\fP specifies the database registered in the configuration file /etc/602sql. If this option is not specified and only one database is registered, the server start; otherwise, if multiple databases are registered, the server will output all names and terminate.
+More information is available in the help file accessible from the GUI client \fI602gcli11\fP.

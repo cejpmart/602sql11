@@ -1,0 +1,56 @@
+#Makes:   PREFccliEXT
+
+MAJOR=@MAJOR_VERSION@
+MINOR=@MINOR_VERSION@
+prefix=@prefix@
+
+top_dir=@top_srcdir@/..
+ownsubdir=ccli
+VPATH=$(top_dir)/src/$(ownsubdir)
+binname=@PREF@ccli@EXT@
+krnllib=@PREF@krnl@EXT@
+OUTPUTPATH=$(top_dir)/@OUTPUTDIR@/@CONFNAME@
+
+#### Building ######################################################################
+INC_DIRS=-I $(top_dir)/include/$(ownsubdir) -I $(top_dir)/include/krnl \
+ -I $(top_dir)/include/common -I $(top_dir)/include/common/unix \
+ -I $(top_dir)/src/common -I $(top_dir)/src/common/unix \
+ -I $(top_dir)/.. -I ..
+DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DCOMPILED_WITH="\"$(CXXFLAGS)\""
+CPPFLAGS=@CPPFLAGS@ --imacros $(top_dir)/build/@MACROS_FILE@ $(INC_DIRS) $(DEFINES)  
+CXXFLAGS=@CXXFLAGS@
+CFLAGS=@CFLAGS@
+
+LDFLAGS='-Wl,-rpath=$$ORIGIN/../lib/@pkgsubdir@' -Wl,-t,--no-undefined @LDFLAGS@ \
+ -L $(OUTPUTPATH)/lib/@pkgsubdir@ -L /usr/lib -v @NODEFAULTLIBS@
+LDLIBS=`relaytool --relay readline -lreadline` -Wl,-Bdynamic,-l$(krnllib),-lpthread -ldl @BINSTDLIBS@
+.PHONY: all install uninstall mostlyclean clean
+
+all: $(OUTPUTPATH)/bin/$(binname)
+
+$(OUTPUTPATH)/bin:
+	install -d $(OUTPUTPATH)/bin
+
+$(OUTPUTPATH)/bin/$(binname): $(binname) | $(OUTPUTPATH)/bin
+	cp $(binname) $(OUTPUTPATH)/bin
+
+SOURCES = options.cpp do_sql.cpp display.cpp builtin_commands.cpp wbcl.cpp
+OBJECTS = $(SOURCES:.cpp=.o) 
+.SECONDARY: $(OBJECTS)
+
+$(top_dir)/build/@CONFNAME@/$(ownsubdir)/unix:
+	install -d unix
+
+$(binname): $(OBJECTS)
+	g++ $(LDFLAGS) -o $(binname) $(OBJECTS) $(LDLIBS)
+
+#### Other targets #################################################################
+clean:
+	rm -f $(binname) *.o
+install: all
+	install -d $(prefix)bin
+	cp $(OUTPUTPATH)/bin/$(binname) $(prefix)bin
+#### Standard rules ###############################################################
+include $(top_dir)/build/Rules.make
+include $(SOURCES:.cpp=.d)
+
